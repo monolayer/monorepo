@@ -13,7 +13,6 @@ export interface DatabaseWorkloadInfo {
 	id: string;
 	databases: {
 		name: string;
-		serverId: string;
 		connectionStringEnvVar: string;
 	}[];
 }

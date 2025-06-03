@@ -8,12 +8,9 @@ test("PostgresDatabase is a Database", () => {
 });
 
 test("connStringComponents", async () => {
-	const postgres = new PostgresDatabase("products", {
-		serverId: "main",
-	});
+	const postgres = new PostgresDatabase("products");
 	expect(postgres.connStringComponents).toStrictEqual([
 		"pg",
-		"main",
 		"products",
 		"database",
 	]);

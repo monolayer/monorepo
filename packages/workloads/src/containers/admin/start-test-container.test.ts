@@ -49,9 +49,6 @@ test(
 	async ({ containers }) => {
 		const postgresDatabase = new PostgresDatabase(
 			"launch_postgres_different_container",
-			{
-				serverId: "app_db_multiple_one",
-			},
 		);
 
 		const container = await startContainer(postgresDatabase, {

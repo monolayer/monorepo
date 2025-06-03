@@ -13,31 +13,12 @@ class TestDatabase extends Database {
 	}
 }
 
-test("databaseId", () => {
-	const db = new TestDatabase("myDb", {
-		serverId: "test-id",
-	});
-	expect(db.id).toStrictEqual("test-id");
-});
-
 test("databaseId defaults to databaseName", () => {
-	const db = new TestDatabase("myDb", {});
+	const db = new TestDatabase("myDb");
 	expect(db.id).toStrictEqual(db.databaseName);
 });
 
-test("connection string components without server id", () => {
-	const db = new TestDatabase("myDb", {});
+test("connection string components", () => {
+	const db = new TestDatabase("myDb");
 	expect(db.connStringComponents).toStrictEqual(["test", "myDb", "database"]);
-});
-
-test("connection string components with server id", () => {
-	const db = new TestDatabase("myDb", {
-		serverId: "main",
-	});
-	expect(db.connStringComponents).toStrictEqual([
-		"test",
-		"main",
-		"myDb",
-		"database",
-	]);
 });

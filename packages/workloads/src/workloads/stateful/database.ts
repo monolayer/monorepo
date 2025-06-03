@@ -17,13 +17,8 @@ export abstract class Database extends StatefulWorkloadWithClient {
 		 * Database name.
 		 */
 		databaseName: string,
-
-		/**
-		 * Options
-		 */
-		options?: DatabaseOptions,
 	) {
-		super(options?.serverId ?? databaseName);
+		super(databaseName);
 		this.databaseName = databaseName;
 	}
 

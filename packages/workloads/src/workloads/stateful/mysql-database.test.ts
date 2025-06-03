@@ -8,12 +8,9 @@ test("MySqlDatabase is a Database", () => {
 });
 
 test("connStringComponents", async () => {
-	const mysql = new MySqlDatabase("users", {
-		serverId: "main",
-	});
+	const mysql = new MySqlDatabase("users");
 	expect(mysql.connStringComponents).toStrictEqual([
 		"mysql",
-		"main",
 		"users",
 		"database",
 	]);

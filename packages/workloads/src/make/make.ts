@@ -73,12 +73,11 @@ export class Make {
 	#addDatabase(workload: Database, info: DatabaseWorkloadInfo[]) {
 		const dbInfo = {
 			name: workload.databaseName,
-			serverId: workload.databaseId,
 			connectionStringEnvVar: workload.connectionStringEnvVar,
 		};
 		const existingDb = info.find((d) => d.id === workload.id);
 		if (existingDb) {
-			existingDb.databases.push(dbInfo);
+			return;
 		} else {
 			info.push({
 				id: workload.id,

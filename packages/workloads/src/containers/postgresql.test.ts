@@ -11,9 +11,7 @@ test(
 		if (process.env.CI) {
 			return;
 		}
-		const postgreSQL = new PostgresDatabase("test_started_container", {
-			serverId: "test_app",
-		});
+		const postgreSQL = new PostgresDatabase("test_started_container");
 
 		const container = new PostgreSQLContainer(postgreSQL);
 		const startedContainer = await container.start(true);
@@ -21,7 +19,7 @@ test(
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
 			labels["org.monolayer-workloads.workload-id"],
-			"postgresdatabase-test-app",
+			"postgresdatabase-test-started-container",
 		);
 		await assertExposedPorts({
 			container: startedContainer,
@@ -29,7 +27,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.MONO_PG_TEST_APP_TEST_STARTED_CONTAINER_DATABASE_URL,
+			process.env.MONO_PG_TEST_STARTED_CONTAINER_DATABASE_URL,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_started_container`,
 		);
 		assert.strictEqual(

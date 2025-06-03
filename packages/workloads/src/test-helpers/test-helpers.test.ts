@@ -35,9 +35,7 @@ test(
 		if (process.env.CI) {
 			return;
 		}
-		const postgreSQL = new PostgresDatabase("truncate", {
-			serverId: "truncate_test",
-		});
+		const postgreSQL = new PostgresDatabase("truncate");
 
 		const container = await startContainer(postgreSQL, {
 			mode: "test",
@@ -81,9 +79,7 @@ test(
 		if (process.env.CI) {
 			return;
 		}
-		const mysqlDb = new MySqlDatabase("app_db", {
-			serverId: "mysql",
-		});
+		const mysqlDb = new MySqlDatabase("app_db");
 
 		await startContainer(mysqlDb, {
 			mode: "test",

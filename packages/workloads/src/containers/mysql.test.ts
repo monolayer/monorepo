@@ -11,7 +11,7 @@ test(
 		if (process.env.CI) {
 			return;
 		}
-		const mySqlDb = new MySqlDatabase("started_container", {});
+		const mySqlDb = new MySqlDatabase("started_container");
 
 		const container = new MySQLContainer(mySqlDb);
 		const startedContainer = await container.start(true);
