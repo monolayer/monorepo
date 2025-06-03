@@ -122,7 +122,6 @@ export const manifestJsonSchema = {
 			type: "object",
 			properties: {
 				name: { type: "string" },
-				serverId: { type: "string" },
 				connectionStringEnvVar: { type: "string" },
 			},
 			required: ["name", "connectionStringEnvVar"],
