@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import next from "next";
+import imageOptimizer from "next/dist/server/image-optimizer.js";
 import ResponseCache from "next/dist/server/response-cache/index.js";
 import { AsyncLocalStorage } from "node:async_hooks";
 import path from "path";
@@ -34,6 +35,20 @@ if (process.env.NEXTJS_ADAPTER_CLOUDFRONT_DOMAIN) {
 		process.env.NEXTJS_ADAPTER_CLOUDFRONT_DOMAIN,
 	);
 }
+
+// Only /tmp is writable.
+// Patch ImageOptimizerCache cacheDir location
+Object.defineProperty(
+	imageOptimizer.ImageOptimizerCache.prototype,
+	"cacheDir",
+	{
+		get() {
+			return "/tmp/cache";
+		},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		set(value) {},
+	},
+);
 
 process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = JSON.stringify(nextConfig);
 

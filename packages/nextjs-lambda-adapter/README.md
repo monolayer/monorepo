@@ -50,6 +50,8 @@ The Lambda function must be configured as follows:
   - NEXTJS_ADAPTER_CACHE_DEBUG (*optional*): Set to `true` to print cache operations.
 - Permissions: read/write permissions to the S3 Bucket and DynamoDB table.
 
+The ImageOptimizationCache will write to the ephemeral storage at /tmp/cache. By default lambda functions have 512MB of ephimeral storage.
+
 ### Example
 
 Here's a sample AWS SAM template `template.yaml` to deploy a barebones application:
