@@ -1,4 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { ChangeMessageVisibilityCommand, SQSClient } from "@aws-sdk/client-sqs";
 import type { SQSBatchItemFailure, SQSEvent } from "aws-lambda";
 import path from "node:path";
 import { insertId } from "./idempotency.js";
@@ -6,7 +7,7 @@ import { insertId } from "./idempotency.js";
 declare class Task<P> {
 	id: string;
 	work: (task: { taskId: string; data: P }) => Promise<void>;
-	options: {
+	options?: {
 		onError?: (error: unknown) => void;
 	};
 }
@@ -16,9 +17,14 @@ const tasks: Record<TaskId, Task<unknown>> = {};
 
 const dynamoDbClient = new DynamoDBClient({});
 
+const sqsClient = new SQSClient();
+
 export function makeSQSTaskHandler(opts: { tasksDir: string }) {
 	const handler = async (event: SQSEvent) => {
-		const batchItemFailures: SQSBatchItemFailure[] = [];
+		const batchItemFailures: {
+			failure: SQSBatchItemFailure;
+			receiptHandle: string;
+		}[] = [];
 		for (const record of event.Records) {
 			try {
 				const messageAttributes = record.messageAttributes;
@@ -55,10 +61,12 @@ export function makeSQSTaskHandler(opts: { tasksDir: string }) {
 					});
 				} catch (e) {
 					console.error(`Error in task: ${task.id}`, e, record);
-					batchItemFailures.push({ itemIdentifier: record.messageId });
+					batchItemFailures.push({
+						failure: { itemIdentifier: record.messageId },
+						receiptHandle: record.receiptHandle,
+					});
 					const options = task.options;
-					if (options === undefined) return;
-					if (options.onError) {
+					if (options?.onError) {
 						try {
 							options.onError(new Error("Task error", { cause: e }));
 						} catch {
@@ -67,11 +75,27 @@ export function makeSQSTaskHandler(opts: { tasksDir: string }) {
 					}
 				}
 			} catch (error) {
-				batchItemFailures.push({ itemIdentifier: record.messageId });
+				batchItemFailures.push({
+					failure: { itemIdentifier: record.messageId },
+					receiptHandle: record.receiptHandle,
+				});
 				console.error("Could not process record", error, record);
 			}
-			return { batchItemFailures };
 		}
+		try {
+			for (const failure of batchItemFailures) {
+				await sqsClient.send(
+					new ChangeMessageVisibilityCommand({
+						QueueUrl: process.env.QUEUE_URL,
+						ReceiptHandle: failure.receiptHandle,
+						VisibilityTimeout: 0,
+					}),
+				);
+			}
+		} catch (e) {
+			console.log("ChangeMessageVisibility failed", e);
+		}
+		return { batchItemFailures: batchItemFailures.map((b) => b.failure) };
 	};
 	return handler;
 }

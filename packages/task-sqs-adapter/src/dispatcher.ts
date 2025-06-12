@@ -3,8 +3,8 @@ import {
 	SendMessageCommand,
 	SQSClient,
 } from "@aws-sdk/client-sqs";
-import { snakeCase } from "case-anything";
 import { randomUUID } from "node:crypto";
+import { snakeCase } from "./snake-case.js";
 import type { ExecutionId, PerformOptions, Task } from "./types.js";
 
 const sqsClient = new SQSClient({});
