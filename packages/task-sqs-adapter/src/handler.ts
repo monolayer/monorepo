@@ -1,7 +1,9 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+	BatchWriteItemCommand,
+	DynamoDBClient,
+} from "@aws-sdk/client-dynamodb";
 import { ChangeMessageVisibilityCommand, SQSClient } from "@aws-sdk/client-sqs";
-import type { SQSBatchItemFailure, SQSEvent } from "aws-lambda";
-import path from "node:path";
+import type { SQSEvent, SQSRecord } from "aws-lambda";
 import { insertId } from "./idempotency.js";
 
 declare class Task<P> {
@@ -12,90 +14,104 @@ declare class Task<P> {
 	};
 }
 
-type TaskId = string & {};
-const tasks: Record<TaskId, Task<unknown>> = {};
-
+const sqsClient = new SQSClient();
 const dynamoDbClient = new DynamoDBClient({});
 
-const sqsClient = new SQSClient();
-
-export function makeSQSTaskHandler(opts: { tasksDir: string }) {
+export function makeSQSTaskHandler(task: Task<unknown>) {
 	const handler = async (event: SQSEvent) => {
-		const batchItemFailures: {
-			failure: SQSBatchItemFailure;
-			receiptHandle: string;
-		}[] = [];
+		const failedRecords: SQSRecord[] = [];
 		for (const record of event.Records) {
 			try {
-				const messageAttributes = record.messageAttributes;
-				if (messageAttributes === undefined) {
-					throw new Error("Expected record with message attributes");
-				}
-
-				const taskId = messageAttributes["taskId"]?.stringValue;
-				if (taskId === undefined) {
-					throw new Error("Expected message attribute with taskId");
-				}
-
-				const idempotencyId = messageAttributes["executionId"]?.stringValue;
-				if (idempotencyId === undefined) {
-					throw new Error("Expected message attribute with executionId");
-				}
-
-				if (tasks[taskId] === undefined) {
-					tasks[taskId] = (
-						await import(path.join(opts.tasksDir, taskId, "index.mjs"))
-					).default;
-				}
-
-				await insertId(idempotencyId, 600, { client: dynamoDbClient });
-
-				const task = tasks[taskId];
-				if (task === undefined) {
-					throw new Error("Expected defined task");
-				}
-				try {
-					await task.work({
-						taskId: record.messageId,
-						data: JSON.parse(record.body),
-					});
-				} catch (e) {
-					console.error(`Error in task: ${task.id}`, e, record);
-					batchItemFailures.push({
-						failure: { itemIdentifier: record.messageId },
-						receiptHandle: record.receiptHandle,
-					});
-					const options = task.options;
-					if (options?.onError) {
-						try {
-							options.onError(new Error("Task error", { cause: e }));
-						} catch {
-							//
-						}
-					}
-				}
+				await putIdempotencyRecord(record);
+				await runTask(task, record);
 			} catch (error) {
-				batchItemFailures.push({
-					failure: { itemIdentifier: record.messageId },
-					receiptHandle: record.receiptHandle,
-				});
 				console.error("Could not process record", error, record);
+				failedRecords.push(record);
 			}
 		}
 		try {
-			for (const failure of batchItemFailures) {
-				await sqsClient.send(
-					new ChangeMessageVisibilityCommand({
-						QueueUrl: process.env.QUEUE_URL,
-						ReceiptHandle: failure.receiptHandle,
-						VisibilityTimeout: 0,
-					}),
-				);
-			}
-		} catch (e) {
-			console.log("ChangeMessageVisibility failed", e);
+			await putFailures(failedRecords);
+			return { batchItemFailures: [] };
+		} catch {
+			await changeMessageVisibility(failedRecords);
+			return {
+				batchItemFailures: failedRecords.map((record) => ({
+					itemIdentifier: record.messageId,
+				})),
+			};
 		}
-		return { batchItemFailures: batchItemFailures.map((b) => b.failure) };
 	};
 	return handler;
+}
+
+async function changeMessageVisibility(failedRecords: SQSRecord[]) {
+	for (const record of failedRecords) {
+		try {
+			await sqsClient.send(
+				new ChangeMessageVisibilityCommand({
+					QueueUrl: process.env.QUEUE_URL,
+					ReceiptHandle: record.receiptHandle,
+					VisibilityTimeout: 0,
+				}),
+			);
+		} catch (e) {
+			console.debug("Could not change message visibility", e);
+		}
+	}
+}
+
+async function runTask(task: Task<unknown>, record: SQSRecord) {
+	try {
+		await task.work({
+			taskId: record.messageId,
+			data: JSON.parse(record.body),
+		});
+	} catch (e) {
+		console.error(`Error in task: ${task.id}`, e, record);
+		const options = task.options;
+		if (options?.onError) {
+			try {
+				options.onError(new Error("Task error", { cause: e }));
+			} catch {
+				//
+			}
+		}
+		throw e;
+	}
+}
+
+async function putIdempotencyRecord(record: SQSRecord) {
+	const messageAttributes = record.messageAttributes;
+
+	const taskId = messageAttributes["taskId"]?.stringValue;
+
+	if (taskId === undefined) {
+		throw new Error("Expected message attribute with taskId");
+	}
+
+	const idempotencyId = messageAttributes["executionId"]?.stringValue;
+	if (idempotencyId === undefined) {
+		throw new Error("Expected message attribute with executionId");
+	}
+
+	await insertId(idempotencyId, 600, { client: dynamoDbClient });
+}
+
+async function putFailures(records: SQSRecord[]) {
+	if (records.length === 0) return;
+	await dynamoDbClient.send(
+		new BatchWriteItemCommand({
+			RequestItems: {
+				[process.env.DYNAMODB_TABLE_NAME!]: records.map((record) => ({
+					PutRequest: {
+						Item: {
+							PK: { S: `FAILED-${process.env.TASK_ID!}` },
+							SK: { S: new Date().toISOString() },
+							data: { S: record.body },
+						},
+					},
+				})),
+			},
+		}),
+	);
 }

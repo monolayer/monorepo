@@ -18,6 +18,7 @@ export async function insertId(
 				TableName: process.env.DYNAMODB_TABLE_NAME,
 				Item: {
 					PK: { S: id },
+					SK: { S: id },
 					ttl: { N: Math.floor(now.getTime() / 1000).toString() },
 				},
 				ConditionExpression: "attribute_not_exists(PK)",
