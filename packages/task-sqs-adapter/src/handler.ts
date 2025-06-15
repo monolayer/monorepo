@@ -5,6 +5,7 @@ import {
 import { ChangeMessageVisibilityCommand, SQSClient } from "@aws-sdk/client-sqs";
 import type { SQSEvent, SQSRecord } from "aws-lambda";
 import { insertId } from "./idempotency.js";
+import { incrementFailed, incrementFinished } from "./queue-stats.js";
 
 declare class Task<P> {
 	id: string;
@@ -61,6 +62,7 @@ async function changeMessageVisibility(failedRecords: SQSRecord[]) {
 }
 
 async function runTask(task: Task<unknown>, record: SQSRecord) {
+	let error: unknown;
 	try {
 		await task.work({
 			taskId: record.messageId,
@@ -76,7 +78,16 @@ async function runTask(task: Task<unknown>, record: SQSRecord) {
 				//
 			}
 		}
-		throw e;
+		error = e;
+	}
+	try {
+		const incrementFn = error ? incrementFailed : incrementFinished;
+		await incrementFn(task.id);
+	} catch (e) {
+		console.error("error while setting counter", e);
+	}
+	if (error) {
+		throw error;
 	}
 }
 

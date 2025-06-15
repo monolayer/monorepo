@@ -9,8 +9,14 @@ export async function createTable() {
 	await dynamodbClient.send(
 		new CreateTableCommand({
 			TableName: process.env.DYNAMODB_TABLE_NAME,
-			KeySchema: [{ AttributeName: "PK", KeyType: "HASH" }],
-			AttributeDefinitions: [{ AttributeName: "PK", AttributeType: "S" }],
+			KeySchema: [
+				{ AttributeName: "PK", KeyType: "HASH" },
+				{ AttributeName: "SK", KeyType: "RANGE" },
+			],
+			AttributeDefinitions: [
+				{ AttributeName: "PK", AttributeType: "S" },
+				{ AttributeName: "SK", AttributeType: "S" },
+			],
 			BillingMode: "PAY_PER_REQUEST",
 		}),
 	);

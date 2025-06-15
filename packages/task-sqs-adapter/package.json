@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/task-sqs-adapter",
-	"version": "1.0.0-pre-18",
+	"version": "1.0.0-pre-19",
 	"description": "SQS adapter for tasks workloads (@monolayer/workloads)",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -71,6 +71,7 @@
 		"@epic-web/remember": "^1.1.0",
 		"@aws-sdk/client-sqs": "^3.797.0",
 		"@aws-sdk/client-dynamodb": "^3.797.0",
+		"@aws-sdk/lib-dynamodb": "^3.828.0",
 		"testcontainers": "^10.24.2",
 		"get-port": "^7.1.0",
 		"@types/aws-lambda": "^8.10.149",
