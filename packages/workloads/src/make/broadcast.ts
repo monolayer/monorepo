@@ -2,7 +2,6 @@ import { kebabCase } from "case-anything";
 import path from "path";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/make/config.js";
-import type { TaskInfo } from "~workloads/make/manifest.js";
 import { requiredFiles } from "~workloads/make/required-filtes.js";
 import type { WorkloadImport } from "~workloads/scan/workload-imports.js";
 
@@ -24,20 +23,23 @@ async function buildBroadcast(
 	const config = tsupConfig(
 		{ index: broadcastImport.src },
 		`.workloads/${dir}`,
-		[],
+		[/(.*)/],
 		".cjs",
 	);
-	config.noExternal = [
-		"@monolayer/workloads",
-		"case-anything",
-		"@epic-web/remember",
-		"cron-parser",
-	];
+	// config.noExternal = [
+	// 	"@monolayer/workloads",
+	// 	"case-anything",
+	// 	"@epic-web/remember",
+	// 	"cron-parser",
+	// ];
 	await build(config);
 	return "index.mjs";
 }
 
-export async function taskRequiredFiles(taskInfo: TaskInfo) {
-	const taskPath = path.join(".workloads", taskInfo.path, taskInfo.entryPoint);
+export async function broadcastRequiredFiles(info: {
+	path: string;
+	entryPoint: string;
+}) {
+	const taskPath = path.join(".workloads", info.path, info.entryPoint);
 	await requiredFiles(taskPath);
 }

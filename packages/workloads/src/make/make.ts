@@ -1,7 +1,10 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
-import { makeBroadcast } from "~workloads/make/broadcast.js";
+import {
+	broadcastRequiredFiles,
+	makeBroadcast,
+} from "~workloads/make/broadcast.js";
 import { makeCron } from "~workloads/make/cron.js";
 import {
 	manifestJsonSchema,
@@ -75,6 +78,7 @@ export class Make {
 				path: info.path,
 				entryPoint: info.entryPoint,
 			};
+			await broadcastRequiredFiles(info);
 		}
 		return manifest;
 	}
