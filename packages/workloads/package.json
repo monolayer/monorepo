@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/workloads",
-	"version": "2.0.1",
+	"version": "2.1.0-pre-1",
 	"description": "The sidecar framework for full-stack web development with React.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -13,7 +13,8 @@
 	},
 	"type": "module",
 	"bin": {
-		"workloads": "dist/bin/cli.js"
+		"workloads": "dist/bin/cli.js",
+		"broadcast-server": "dist/bin/broadcast-server.mjs"
 	},
 	"files": [
 		"dist/**/*.js",
@@ -31,6 +32,16 @@
 			"require": {
 				"types": "./dist/cjs/index.d.ts",
 				"default": "./dist/cjs/index.js"
+			}
+		},
+		"./broadcast-client": {
+			"import": {
+				"types": "./dist/esm/broadcast-client.d.ts",
+				"default": "./dist/esm/broadcast-client.js"
+			},
+			"require": {
+				"types": "./dist/cjs/broadcast-client.d.ts",
+				"default": "./dist/cjs/broadcast-client.js"
 			}
 		},
 		"./test-helpers": {
@@ -56,8 +67,9 @@
 	},
 	"scripts": {
 		"prebuild": "rm -rf dist/*",
-		"build": "npm run build:esm && npm run build:cjs && npm run build:cli",
+		"build": "npm run build:esm && npm run build:cjs && npm run build:cli && npm run build:broadcast-server",
 		"build:cli": "tsup --config tsup.cli.config.ts",
+		"build:broadcast-server": "npx tsx build-broadcast-server.ts",
 		"build:cjs": "tsc -b tsconfig.build.cjs.json",
 		"build:esm": "tsc -b tsconfig.build.json",
 		"postbuild": "npm run alias && npm run makeexec && npm run makepackage",
@@ -133,6 +145,14 @@
 		"tsup": "^8.3.5",
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
-		"vitest": "^3.1.4"
+		"vitest": "^3.1.4",
+		"uuid": "^11.1.0",
+		"ws": "^8.18.3",
+		"@types/ws": "^8.18.1",
+		"esbuild": "^0.25.6",
+		"react": "^19",
+		"react-dom": "^19",
+		"@types/react": "^19",
+		"@types/react-dom": "^19"
 	}
 }

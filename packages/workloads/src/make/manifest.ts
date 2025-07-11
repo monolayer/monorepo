@@ -7,6 +7,13 @@ export interface BuildManifest {
 	bucket: BucketInfo[];
 	cron: CronInfo[];
 	task: TaskInfo[];
+	broadcast:
+		| {
+				id: string;
+				path: string;
+				entryPoint: string;
+		  }
+		| object;
 }
 
 export interface DatabaseWorkloadInfo {
@@ -48,7 +55,7 @@ export const manifestJsonSchema = {
 	properties: {
 		version: {
 			type: "string",
-			enum: ["2"],
+			enum: ["3"],
 			description:
 				"The version of the schema. This must be '1' for version 1 of the schema.",
 		},
@@ -95,6 +102,16 @@ export const manifestJsonSchema = {
 				description: "Array of Task",
 			},
 		},
+		broadcast: {
+			type: "string",
+			id: { type: "string" },
+			path: {
+				type: "string",
+			},
+			entryPoint: {
+				type: "string",
+			},
+		},
 	},
 	required: ["framework", "version"],
 	optional: [
@@ -104,6 +121,7 @@ export const manifestJsonSchema = {
 		"bucket",
 		"cron",
 		"task",
+		"broadcast",
 	],
 	$defs: {
 		DatabaseWorkloadInfo: {

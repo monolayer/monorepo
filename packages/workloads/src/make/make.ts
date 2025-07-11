@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
+import { makeBroadcast } from "~workloads/make/broadcast.js";
 import { makeCron } from "~workloads/make/cron.js";
 import {
 	manifestJsonSchema,
@@ -67,7 +68,14 @@ export class Make {
 			manifest.task.push(taskInfo);
 			await taskRequiredFiles(taskInfo);
 		}
-
+		if (this.#imports.Broadcast.length === 1) {
+			const info = await makeBroadcast(this.#imports.Broadcast[0]!);
+			manifest.broadcast = {
+				id: "broadcast",
+				path: info.path,
+				entryPoint: info.entryPoint,
+			};
+		}
 		return manifest;
 	}
 
@@ -121,6 +129,7 @@ export class Make {
 			bucket: [],
 			cron: [],
 			task: [],
+			broadcast: {},
 		};
 		return manifest;
 	}

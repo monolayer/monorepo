@@ -8,8 +8,10 @@
 			"~workloads/*": ["src/*"],
 			"~test/*": ["test/*"]
 		},
+		// "lib": ["dom", "dom.iterable"],
 		"outDir": "./dist",
 		"emitDeclarationOnly": true,
-		"declaration": true
+		"declaration": true,
+		"jsx": "react-jsx"
 	}
 }

@@ -48,9 +48,12 @@ export async function importWorkloads() {
 			for (const [, workload] of Object.entries(imported)) {
 				if (workload !== undefined) {
 					const workloadKind = workload.constructor.name;
+					const workloadPath = path.relative(cwd(), importPath);
 					if (validWorkload(workloadKind)) {
-						const workloadPath = path.relative(cwd(), importPath);
 						imports.add(workloadPath, workload);
+					}
+					if (workloadPath.endsWith("broadcast.ts")) {
+						imports.addBroadcast(workloadPath, workload);
 					}
 				}
 			}
@@ -84,6 +87,7 @@ interface ImportByWorkload {
 	Redis: WorkloadImport<Redis>[];
 	Cron: WorkloadImport<Cron>[];
 	Task: WorkloadImport<Task<unknown>>[];
+	Broadcast: WorkloadImport<unknown>[];
 }
 
 export class WorkloadImports {
@@ -101,6 +105,7 @@ export class WorkloadImports {
 			Redis: [],
 			Cron: [],
 			Task: [],
+			Broadcast: [],
 		};
 	}
 
@@ -135,6 +140,15 @@ export class WorkloadImports {
 
 	get Task() {
 		return this.#importsByWorkload.Task;
+	}
+
+	get Broadcast() {
+		return this.#importsByWorkload.Broadcast;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	addBroadcast(src: string, workload: any) {
+		this.#importsByWorkload.Broadcast = [{ src, workload }];
 	}
 
 	add(src: string, workload: StatefulWorkloadWithClient) {
