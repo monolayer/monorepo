@@ -19,19 +19,19 @@ export type WebSocketsContext = {
 export const WebSocketsProvider = createContext<WebSocketsContext>(null);
 
 export interface WebSocketsContextProviderProps {
-	url: string;
+	urlAndHost: { url: string; host: string };
 	children: ReactNode;
 }
 
 export function WebSocketsContextProvider({
-	url,
+	urlAndHost,
 	children,
 }: WebSocketsContextProviderProps) {
 	const [ws] = useState(
 		useMemo(() => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return new AppSyncEventsClient<any>(url);
-		}, [url]),
+			return new AppSyncEventsClient<any>(urlAndHost);
+		}, [urlAndHost]),
 	);
 	const [connected, setConnected] = useState(false);
 	useEffect(() => {

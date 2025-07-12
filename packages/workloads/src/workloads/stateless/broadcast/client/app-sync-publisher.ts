@@ -91,8 +91,8 @@ export class AppSyncEventsPublisher<
 		const events = JSON.stringify(data);
 		const publishMessage = buildPublishMessage(id, `default${path}`, [events], {
 			clientId: this.connectionManager.clientId,
-			host: "",
-			Authorization: "",
+			host: process.env.ML_BROADCAST_HOST ?? "localhost",
+			Authorization: "--",
 		});
 		this.connectionManager.send(JSON.stringify(publishMessage));
 		return;

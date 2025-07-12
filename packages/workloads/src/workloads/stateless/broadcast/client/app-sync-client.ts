@@ -36,14 +36,16 @@ export class AppSyncEventsClient<
 	private subscriptionManager: SubscriptionManager;
 	eventEmitter: EventEmitter;
 	private readonly url: string;
+	private readonly host: string;
 	connected: boolean;
 	/**
 	 * Creates an instance of AppSyncEventsClient.
 	 * @param url The WebSocket URL for the AWS AppSync Events API.
 	 * @param authorization The authorization object required for the WebSocket connection.
 	 */
-	constructor(url: string) {
-		this.url = url;
+	constructor(opts: { url: string; host: string }) {
+		this.url = opts.url;
+		this.host = opts.host;
 		this.connectionManager = new ConnectionManager(this.url);
 		this.eventEmitter = new EventEmitter();
 		this.subscriptionManager = new SubscriptionManager(
@@ -123,8 +125,8 @@ export class AppSyncEventsClient<
 			`default${path}`,
 			{
 				clientId: this.connectionManager.clientId,
-				host: "",
-				Authorization: "",
+				host: this.host,
+				Authorization: "--",
 			},
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			callback as (payload: any) => void,

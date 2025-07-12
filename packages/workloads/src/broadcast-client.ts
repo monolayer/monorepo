@@ -6,6 +6,9 @@ export {
 	useWebSocket,
 } from "~workloads/workloads/stateless/broadcast/client/websockets-provider.js";
 
-export function broadcastURL() {
-	return process.env.ML_BROADCAST_URL ?? "ws://localhost:9311";
+export function clientConfig() {
+	return {
+		url: process.env.ML_BROADCAST_URL ?? "ws://localhost:9311",
+		host: process.env.ML_BROADCAST_HOST ?? "localhost",
+	};
 }

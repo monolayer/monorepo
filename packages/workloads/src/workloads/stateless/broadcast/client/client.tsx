@@ -3,11 +3,18 @@ import type { Channel } from "~workloads/workloads/stateless/broadcast/channel.j
 import { useWebSocket } from "~workloads/workloads/stateless/broadcast/client/websockets-provider.js";
 import type { RouteParams } from "~workloads/workloads/stateless/broadcast/types.js";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function client<C extends Record<string, { channel: Channel<any> }>>() {
+export function client<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	C extends Record<string, { channel: Channel<any> }>,
+>() {
 	const useSubscription = <D extends keyof C & string>(
 		channel: D,
 		params: RouteParams<D>,
+		initial: typeof channel extends string
+			? C[typeof channel] extends { channel: Channel<infer P> }
+				? P
+				: never
+			: never,
 	) => {
 		type StateType = typeof channel extends string
 			? C[typeof channel] extends { channel: Channel<infer P> }
@@ -15,7 +22,7 @@ export function client<C extends Record<string, { channel: Channel<any> }>>() {
 				: never
 			: never;
 
-		const [data, setData] = useState<null | StateType>(null);
+		const [data, setData] = useState<StateType>(initial);
 		const [subscribe, setSubscribed] = useState(false);
 		const client = useWebSocket<C>();
 
