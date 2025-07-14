@@ -30,7 +30,7 @@
 			"~services/*": ["internal/services/src/*"],
 			"~state/*": ["internal/state/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
-			"~workloads/*": ["packages/workloads/src/*"],
+			"~workloads/*": ["packages/sdk/src/*"],
 			"~dw/*": ["packages/dw/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
