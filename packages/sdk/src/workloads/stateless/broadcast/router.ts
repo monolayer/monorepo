@@ -180,7 +180,7 @@ export class Broadcast<T extends Record<string, any>, S> extends Workload {
 	}
 
 	get connectionStringEnvVar() {
-		return "ML_BROADCAST_URL";
+		return "ML_BROADCAST_URL" as const;
 	}
 }
 
