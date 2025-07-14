@@ -22,8 +22,9 @@ export type {
 	StatefulWorkload,
 	StatefulWorkloadWithClient,
 } from "~workloads/workloads/stateful/stateful-workload.js";
-export { channel } from "~workloads/workloads/stateless/broadcast/channel.js";
-export { channelRouter } from "~workloads/workloads/stateless/broadcast/router.js";
+export { Channel } from "~workloads/workloads/stateless/broadcast/channel.js";
+export { broadcastClient } from "~workloads/workloads/stateless/broadcast/client/client.js";
+export { Broadcast } from "~workloads/workloads/stateless/broadcast/router.js";
 export type { StatelessWorkload } from "~workloads/workloads/stateless/stateless-workload.js";
 export {
 	Task,
@@ -32,3 +33,7 @@ export {
 } from "~workloads/workloads/stateless/task/task.js";
 export type { Workload } from "~workloads/workloads/workload.js";
 export { Cron, type CronOptions } from "./workloads/stateless/cron.js";
+
+export { BroadcastPublisher } from "~workloads/workloads/stateless/broadcast/client/app-sync-publisher.js";
+
+export { Broadcast as BroadcastProvider } from "~workloads/workloads/stateless/broadcast/client/provider.js";

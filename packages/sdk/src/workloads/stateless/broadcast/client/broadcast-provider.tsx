@@ -8,29 +8,29 @@ import {
 	type ReactNode,
 } from "react";
 import type { Channel } from "~workloads/workloads/stateless/broadcast/channel.js";
-import { AppSyncEventsClient } from "./app-sync-client.js";
+import { BroadcastClient } from "./app-sync-client.js";
 
-export type WebSocketsContext = {
+export type BroadcastContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	ws: AppSyncEventsClient<any>;
+	ws: BroadcastClient<any>;
 	connected: boolean;
 } | null;
 
-export const WebSocketsProvider = createContext<WebSocketsContext>(null);
+export const BroadcastProvider = createContext<BroadcastContext>(null);
 
-export interface WebSocketsContextProviderProps {
+export interface BroadcastContextProviderProps {
 	urlAndHost: { url: string; host: string };
 	children: ReactNode;
 }
 
-export function WebSocketsContextProvider({
+export function BroadcastContextProvider({
 	urlAndHost,
 	children,
-}: WebSocketsContextProviderProps) {
+}: BroadcastContextProviderProps) {
 	const [ws] = useState(
 		useMemo(() => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return new AppSyncEventsClient<any>(urlAndHost);
+			return new BroadcastClient<any>(urlAndHost);
 		}, [urlAndHost]),
 	);
 	const [connected, setConnected] = useState(false);
@@ -44,9 +44,9 @@ export function WebSocketsContextProvider({
 	}, [ws]);
 
 	return (
-		<WebSocketsProvider.Provider value={{ ws, connected }}>
+		<BroadcastProvider.Provider value={{ ws, connected }}>
 			{children}
-		</WebSocketsProvider.Provider>
+		</BroadcastProvider.Provider>
 	);
 }
 
@@ -54,11 +54,11 @@ export function useWebSocket<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends Record<string, { channel: Channel<any> }>,
 >() {
-	const context = use(WebSocketsProvider);
+	const context = use(BroadcastProvider);
 	if (!context) {
 		throw new Error(
-			"useWebSockets must be used within a <WebSocketsProvider />",
+			"useWebSockets must be used within a <BroadcastProvider />",
 		);
 	}
-	return context.ws as AppSyncEventsClient<T>;
+	return context.ws as BroadcastClient<T>;
 }

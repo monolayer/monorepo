@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/sdk",
-	"version": "1.0.0-canary.1",
+	"version": "1.0.0-dev.2",
 	"description": "Build and deploy full-stack applications with zero infrastructure overhead.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -32,16 +32,6 @@
 			"require": {
 				"types": "./dist/cjs/index.d.ts",
 				"default": "./dist/cjs/index.js"
-			}
-		},
-		"./broadcast": {
-			"import": {
-				"types": "./dist/esm/broadcast.d.ts",
-				"default": "./dist/esm/broadcast.js"
-			},
-			"require": {
-				"types": "./dist/cjs/broadcast.d.ts",
-				"default": "./dist/cjs/broadcast.js"
 			}
 		},
 		"./test-helpers": {

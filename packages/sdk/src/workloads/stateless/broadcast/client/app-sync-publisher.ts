@@ -12,9 +12,9 @@ import { buildPublishMessage } from "./messageBuilder.js";
 import { AppSyncWebSocketMessage } from "./types.js";
 
 /**
- * Configuration options for the AppSyncEventsClient.
+ * Configuration options for the BroadcastPublisher.
  */
-export interface AppSyncPublisherConfig {
+export interface BroadcastPublisherConfig {
 	url: string;
 	authorization: object;
 }
@@ -25,7 +25,7 @@ export interface AppSyncPublisherConfig {
  * an interface for publishing events.
  */
 
-export class AppSyncEventsPublisher<
+export class BroadcastPublisher<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	C extends Record<string, { channel: Channel<any> }>,
 > {

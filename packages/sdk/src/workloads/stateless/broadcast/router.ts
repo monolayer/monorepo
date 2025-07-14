@@ -58,32 +58,32 @@ export type Simplify<T> = DrainOuterGeneric<
 >;
 
 /**
- * Creates a channel router with channels for broadcast.
+ * Creates a Broadcast workloads
  *
- * This function takes a session handler and a configuration object for routes. Each route
- * is mapped to a channel and an optional authorization handler. The route paths can
+ * The constructore takes a session handler and a configuration object for channels. Each channel
+ * is mapped to a path and an optional authorization handler. The channel paths can
  * include dynamic segments, like `/users/[id]`, which are parsed and passed to the
  * authorization logic.
  *
- * @template T - A record mapping route strings to their channel types.
+ * @template T - A record mapping channel strings to their channel data types.
  * @template S - The type of the session object, returned by the `session` function.
  *
  * @param session A function that resolves to a session object. This object is available
  *   within the authorization handlers. It receives an object with `cookies` as an argument.
- * @param routes An object where keys are route strings and values are objects defining
+ * @param channels An object where keys are route strings and values are objects defining
  *   the channel and its authorization logic.
  *   - `auth`: An optional function to authorize "PUBLISH" or "SUBSCRIBE" operations.
  *     It receives the operation type, route parameters, and the session object.
  *   - `channel`: The channel instance for the route.
  *
- * @returns An object containing the configured routes, an internal authorization function (`authFn`),
+ * @returns An object containing the configured channels, an internal authorization function (`authFn`),
  *   and the session handler.
  *
  * @example
  * ```ts
- * import { channel, channelRouter } from "@monolayer/sdk";
+ * import { channel, Broadcast } from "@monolayer/sdk";
  *
- * const router = channelRouter(
+ * const broadcast = new Broadcast(
  *   async () => ({ userId: 1 }),
  *   {
  *     "/todos": {
@@ -102,29 +102,49 @@ export type Simplify<T> = DrainOuterGeneric<
  *     },
  *   }
  * );
+ *
+ * export default broadcast;
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function channelRouter<T extends Record<string, any>, S>(
-	session: (opts: { cookies: Record<string, string> }) => Promise<S>,
-	routes: {
-		[route in keyof T]: ValidateRoute<route & string> extends never
+export class Broadcast<T extends Record<string, any>, S> {
+	session: (opts: { cookies: Record<string, string> }) => Promise<S>;
+	channels: {
+		[channel in keyof T]: ValidateRoute<channel & string> extends never
 			? never
 			: {
 					auth?: (ctx: {
 						operation: "PUBLISH" | "SUBSCRIBE";
-						params: route extends string ? Simplify<RouteParams<route>> : never;
+						params: channel extends string
+							? Simplify<RouteParams<channel>>
+							: never;
 						session: S;
 					}) => Promise<boolean>;
-					channel: T[route];
+					channel: T[channel];
 				};
-	},
-) {
-	const authFn = async (
-		route: string,
-		operation: "PUBLISH" | "SUBSCRIBE",
-		session: S,
-	) => {
+	};
+	constructor(
+		session: (opts: { cookies: Record<string, string> }) => Promise<S>,
+		channels: {
+			[channel in keyof T]: ValidateRoute<channel & string> extends never
+				? never
+				: {
+						auth?: (ctx: {
+							operation: "PUBLISH" | "SUBSCRIBE";
+							params: channel extends string
+								? Simplify<RouteParams<channel>>
+								: never;
+							session: S;
+						}) => Promise<boolean>;
+						channel: T[channel];
+					};
+		},
+	) {
+		this.session = session;
+		this.channels = channels;
+	}
+
+	async authFn(route: string, operation: "PUBLISH" | "SUBSCRIBE", session: S) {
 		const auth: Record<
 			string,
 			| ((ctx: {
@@ -134,13 +154,14 @@ export function channelRouter<T extends Record<string, any>, S>(
 			  }) => Promise<boolean>)
 			| undefined
 		> = {};
-		for (const routeName of Object.keys(routes)) {
-			if (routes[routeName]) {
-				auth[`${path.join("default", routeName)}`] = routes[routeName].auth;
+		for (const routeName of Object.keys(this.channels)) {
+			if (this.channels[routeName]) {
+				auth[`${path.join("default", routeName)}`] =
+					this.channels[routeName].auth;
 			}
 		}
 		const matcher = new RouteMatcher(
-			Object.keys(routes).map((r) => path.join("default", r)),
+			Object.keys(this.channels).map((r) => path.join("default", r)),
 		);
 		const match = matcher.match(route);
 		if (match) {
@@ -154,6 +175,5 @@ export function channelRouter<T extends Record<string, any>, S>(
 		} else {
 			return true;
 		}
-	};
-	return { routes, authFn, session };
+	}
 }

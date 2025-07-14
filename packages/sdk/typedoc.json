@@ -3,7 +3,6 @@
 	"out": "docs/reference/api",
 	"entryPoints": [
 		"./src/workloads.ts",
-		"./src/broadcast.ts",
 		"./src/test-helpers.ts",
 		"./src/introspection.ts"
 	],

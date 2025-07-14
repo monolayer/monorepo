@@ -1,9 +1,9 @@
 import { useEffect, useReducer, useState } from "react";
 import type { Channel } from "~workloads/workloads/stateless/broadcast/channel.js";
-import { useWebSocket } from "~workloads/workloads/stateless/broadcast/client/websockets-provider.js";
+import { useWebSocket } from "~workloads/workloads/stateless/broadcast/client/broadcast-provider.js";
 import type { RouteParams } from "~workloads/workloads/stateless/broadcast/types.js";
 
-export function client<
+export function broadcastClient<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	C extends Record<string, { channel: Channel<any> }>,
 >() {

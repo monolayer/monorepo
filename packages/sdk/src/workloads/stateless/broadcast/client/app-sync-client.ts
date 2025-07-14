@@ -13,9 +13,9 @@ import { SubscriptionManager } from "./subscriptionManager.js";
 import { AppSyncWebSocketMessage } from "./types.js";
 
 /**
- * Configuration options for the AppSyncEventsClient.
+ * Configuration options for the BroadcastClient.
  */
-export interface AppSyncClientConfig {
+export interface BroadcastClientConfig {
 	url: string;
 	authorization: object;
 }
@@ -26,7 +26,7 @@ export interface AppSyncClientConfig {
  * an interface for subscribing to and publishing events.
  */
 
-export class AppSyncEventsClient<
+export class BroadcastClient<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	C extends Record<string, { channel: Channel<any> }>,
 > {
