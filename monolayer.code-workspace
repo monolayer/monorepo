@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "packages/sdk"
+		},
+		{
+			"path": "packages/nextjs-lambda-adapter"
+		},
+		{
+			"path": "packages/task-sqs-adapter"
+		}
+	],
+	"settings": {
+		"typescript.tsserver.experimental.enableProjectDiagnostics": true,
+		"typescript.tsdk": "./node_modules/typescript/lib",
+		"turbo.useLocalTurbo": true,
+		"npm-intellisense.recursivePackageJsonLookup": false,
+		"files.associations": {
+			".env": "env",
+			".env*": "env"
+		},
+		"workbench.panel.defaultLocation": "bottom"
+	}
+}
