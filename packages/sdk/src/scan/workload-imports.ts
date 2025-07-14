@@ -7,7 +7,6 @@ import { workloadsConfiguration } from "~workloads/configuration.js";
 import {
 	type Bucket,
 	type Cron,
-	type MySqlDatabase,
 	type PostgresDatabase,
 	type Redis,
 	type Task,
@@ -16,7 +15,6 @@ import {
 	assertBroadcast,
 	assertBucket,
 	assertCron,
-	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
 	assertTask,
@@ -64,7 +62,6 @@ export async function importWorkloads() {
 const validConstructor = [
 	"PostgresDatabase",
 	"Redis",
-	"MySqlDatabase",
 	"Bucket",
 	"Cron",
 	"Task",
@@ -82,7 +79,6 @@ export interface WorkloadImport<I> {
 
 interface ImportByWorkload {
 	PostgresDatabase: WorkloadImport<PostgresDatabase>[];
-	MySqlDatabase: WorkloadImport<MySqlDatabase>[];
 	Bucket: WorkloadImport<Bucket>[];
 	Redis: WorkloadImport<Redis>[];
 	Cron: WorkloadImport<Cron>[];
@@ -101,7 +97,6 @@ export class WorkloadImports {
 	constructor() {
 		this.#importsByWorkload = {
 			PostgresDatabase: [],
-			MySqlDatabase: [],
 			Bucket: [],
 			Redis: [],
 			Cron: [],
@@ -113,7 +108,6 @@ export class WorkloadImports {
 	get workloadsWithContainers() {
 		return [
 			...this.Bucket,
-			...this.MySqlDatabase,
 			...this.PostgresDatabase,
 			...this.Redis,
 			...this.Broadcast,
@@ -122,10 +116,6 @@ export class WorkloadImports {
 
 	get Redis() {
 		return this.#importsByWorkload.Redis;
-	}
-
-	get MySqlDatabase() {
-		return this.#importsByWorkload.MySqlDatabase;
 	}
 
 	get PostgresDatabase() {
@@ -162,13 +152,6 @@ export class WorkloadImports {
 			switch (key) {
 				case "Redis":
 					assertRedis(workload);
-					this.#importsByWorkload[key].push({
-						src,
-						workload,
-					});
-					break;
-				case "MySqlDatabase":
-					assertMySqlDatabase(workload);
 					this.#importsByWorkload[key].push({
 						src,
 						workload,

@@ -2,7 +2,6 @@ export interface BuildManifest {
 	version: string;
 	framework: string;
 	postgresDatabase: DatabaseWorkloadInfo[];
-	mySqlDatabase: DatabaseWorkloadInfo[];
 	redis: WorkloadInfo[];
 	bucket: BucketInfo[];
 	cron: CronInfo[];

@@ -15,7 +15,6 @@ export {
 	bucketLocalConfiguration,
 } from "~workloads/workloads/stateful/bucket.js";
 export type { Database } from "~workloads/workloads/stateful/database.js";
-export { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 export { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 export { Redis } from "~workloads/workloads/stateful/redis.js";
 export type {

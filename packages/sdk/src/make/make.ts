@@ -44,10 +44,7 @@ export class Make {
 				publicRead: imported.workload.publicRead,
 			});
 		}
-		for (const imported of [
-			...this.#imports.PostgresDatabase,
-			...this.#imports.MySqlDatabase,
-		]) {
+		for (const imported of [...this.#imports.PostgresDatabase]) {
 			this.#addDatabase(imported.workload, manifest.postgresDatabase);
 		}
 		for (const imported of this.#imports.Cron) {
@@ -128,7 +125,6 @@ export class Make {
 			version: "2",
 			framework: (await projectFramework()) ?? "",
 			postgresDatabase: [],
-			mySqlDatabase: [],
 			redis: [],
 			bucket: [],
 			cron: [],

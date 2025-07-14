@@ -1,22 +1,14 @@
 import getPort from "get-port";
-import mysql from "mysql2/promise";
 import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
-import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
 export function postgresDatabasePool(workload: PostgresDatabase) {
 	return new pg.Pool({
 		connectionString: process.env[workload.connectionStringEnvVar],
 	});
-}
-
-export async function mysqlConnection(workload: MySqlDatabase) {
-	return await mysql.createConnection(
-		process.env[workload.connectionStringEnvVar]!,
-	);
 }
 
 export async function startLocalStackContainer() {

@@ -3,7 +3,6 @@ import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
 import { BroadcastContainer } from "~workloads/containers/broadcast.js";
 import { MinioContainer } from "~workloads/containers/minio.js";
-import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
 import { importWorkloads } from "~workloads/scan/workload-imports.js";
@@ -14,7 +13,6 @@ import {
 import {
 	assertBroadcast,
 	assertBucket,
-	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
 } from "~workloads/workloads/assertions.js";
@@ -47,9 +45,6 @@ async function containerForWorkload(
 		case "PostgresDatabase":
 			assertPostgresDatabase(workload);
 			return await new PostgreSQLContainer(workload).containerImage();
-		case "MySqlDatabase":
-			assertMySqlDatabase(workload);
-			return await new MySQLContainer(workload).containerImage();
 		case "Redis":
 			assertRedis(workload);
 			return await new RedisContainer(workload).containerImage();

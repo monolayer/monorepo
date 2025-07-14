@@ -1,4 +1,3 @@
-export { truncateMySqlTables } from "~workloads/test-helpers/mysql.js";
 export { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
 export { flushRedis } from "~workloads/test-helpers/redis.js";
 export {

@@ -28,7 +28,6 @@ export default defineConfig({
 								text: "Stateful",
 								items: [
 									{ text: "PostgresDatabase", link: "postgres" },
-									{ text: "MySqlDatabase", link: "mysql" },
 									{ text: "Bucket", link: "bucket" },
 									{ text: "Redis", link: "redis" },
 								],

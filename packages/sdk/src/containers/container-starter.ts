@@ -1,12 +1,10 @@
 import { remember } from "@epic-web/remember";
 import { MinioContainer } from "~workloads/containers/minio.js";
-import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
 import {
 	assertBroadcast,
 	assertBucket,
-	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
 } from "~workloads/workloads/assertions.js";
@@ -31,9 +29,6 @@ class ContainerStarter {
 			case "Redis":
 				assertRedis(workload);
 				return new RedisContainer(workload);
-			case "MySqlDatabase":
-				assertMySqlDatabase(workload);
-				return new MySQLContainer(workload);
 			case "PostgresDatabase":
 				assertPostgresDatabase(workload);
 				return new PostgreSQLContainer(workload);

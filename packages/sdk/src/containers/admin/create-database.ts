@@ -1,6 +1,4 @@
-import mysql from "mysql2/promise";
 import pg from "pg";
-import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
 export async function createPostgresDatabase(workload: PostgresDatabase) {
@@ -17,15 +15,7 @@ export async function createPostgresDatabase(workload: PostgresDatabase) {
 	await client.end();
 }
 
-export async function createMysqlDatabase(workload: MySqlDatabase) {
-	const connection = await mysql.createConnection(adminCredentials(workload)!);
-	await connection.query(
-		`CREATE DATABASE IF NOT EXISTS ${workload.databaseName};`,
-	);
-	await connection.end();
-}
-
-function adminCredentials(workload: MySqlDatabase | PostgresDatabase) {
+function adminCredentials(workload: PostgresDatabase) {
 	return process.env[workload.connectionStringEnvVar]?.replace(
 		/(\d)\/.+$/,
 		"$1",
