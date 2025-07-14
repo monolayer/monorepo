@@ -44,7 +44,8 @@
 			"@monorepo/services/*": ["internal/services/src/*"],
 			"@monorepo/state/*": ["internal/state/src/*"],
 			"@monorepo/utils/*": ["internal/utils/src/*"]
-		}
+		},
+		"jsx": "react-jsx"
 	},
 	"emitDeclarationOnly": true,
 	"exclude": ["node_modules", "dist", "tmp", "tests", "**/*/*.test.ts"]
