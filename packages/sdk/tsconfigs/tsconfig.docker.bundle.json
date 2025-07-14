@@ -1,0 +1,7 @@
+{
+	"extends": "../../../internal/docker/tsconfig.build.json",
+	"compilerOptions": {
+		"outDir": "./../../../packages/sdk/dist/esm/packages/docker",
+		"tsBuildInfoFile": "./../../../packages/sdk/dist/esm/packages/docker/tsconfig.build.tsbuildinfo"
+	}
+}

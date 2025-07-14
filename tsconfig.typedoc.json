@@ -12,7 +12,7 @@
 		"internal/services/src/**/*",
 		"internal/state/src/**/*",
 		"internal/utils/src/**/*",
-		"packages/workloads/src/**/*",
+		"packages/sdk/src/**/*",
 		"packages/dw/src/**/*",
 		"packages/dsdk/src/**/*"
 	],

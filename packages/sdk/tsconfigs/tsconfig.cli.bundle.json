@@ -1,0 +1,7 @@
+{
+	"extends": "../../../internal/utils/tsconfig.build.json",
+	"compilerOptions": {
+		"outDir": "./../../../packages/sdk/dist/esm/packages/utils",
+		"tsBuildInfoFile": "./../../../packages/sdk/dist/esm/packages/utils/tsconfig.build.tsbuildinfo"
+	}
+}

@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/workloads.yml"
-      - "packages/workloads/**"
+      - "packages/sdk/**"
 
   workflow_dispatch:
 

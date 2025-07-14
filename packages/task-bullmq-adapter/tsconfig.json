@@ -8,11 +8,11 @@
 		"emitDeclarationOnly": true,
 		"declaration": true,
 		"paths": {
-			"~workloads/*": ["./../../packages/workloads/src/*"]
+			"~workloads/*": ["./../../packages/sdks/src/*"]
 		}
 	},
 	"references": [
 		{ "path": "../../internal/utils" },
-		{ "path": "../../packages/workloads" }
+		{ "path": "../../packages/sdk" }
 	]
 }
