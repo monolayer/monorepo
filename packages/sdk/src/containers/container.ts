@@ -11,6 +11,7 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type {
+	BindMount,
 	ContentToCopy,
 	Environment,
 	HealthCheck,
@@ -163,6 +164,12 @@ export abstract class WorkloadContainer {
 		if (this.definition.command) {
 			container.withCommand(this.definition.command);
 		}
+		if (this.definition.workingDir) {
+			container.withWorkingDir(this.definition.workingDir);
+		}
+		if (this.definition.bindMounts) {
+			container.withBindMounts(this.definition.bindMounts);
+		}
 
 		const portsFromDefinition =
 			(await this.#exposedPortsFromConfiguration()) ||
@@ -230,6 +237,8 @@ export interface WorkloadContainerDefinition {
 	healthCheck?: HealthCheck;
 	contentsToCopy?: ContentToCopy[];
 	command?: string[];
+	workingDir?: string;
+	bindMounts?: BindMount[];
 }
 
 export function mergeOptions(

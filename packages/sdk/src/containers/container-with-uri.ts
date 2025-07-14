@@ -1,12 +1,17 @@
 import { type StartedTestContainer } from "testcontainers";
 import { WorkloadContainer } from "~workloads/containers/container.js";
 import type { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workload.js";
+import type { AnyBroadcast } from "~workloads/workloads/stateless/broadcast/router.js";
 
 export abstract class ContainerWithURI extends WorkloadContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: StatefulWorkload & { connectionStringEnvVar: string }) {
+	constructor(
+		workload:
+			| (StatefulWorkload & { connectionStringEnvVar: string })
+			| AnyBroadcast,
+	) {
 		super(workload);
 	}
 

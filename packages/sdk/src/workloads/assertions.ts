@@ -5,6 +5,7 @@ import type { Redis } from "~workloads/workloads/stateful/redis.js";
 import type { Cron } from "~workloads/workloads/stateless/cron.js";
 import type { Task } from "~workloads/workloads/stateless/task/task.js";
 import type { Workload } from "~workloads/workloads/workload.js";
+import type { AnyBroadcast } from "./stateless/broadcast/router.js";
 
 export function assertRedis(workload: Workload): asserts workload is Redis {}
 
@@ -23,3 +24,7 @@ export function assertCron(workload: Workload): asserts workload is Cron {}
 export function assertTask(
 	workload: Workload,
 ): asserts workload is Task<unknown> {}
+
+export function assertBroadcast(
+	workload: Workload,
+): asserts workload is AnyBroadcast {}

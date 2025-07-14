@@ -1,6 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
+import { BroadcastContainer } from "~workloads/containers/broadcast.js";
 import { MinioContainer } from "~workloads/containers/minio.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
@@ -11,11 +12,13 @@ import {
 	type StatefulWorkloadWithClient,
 } from "~workloads/workloads.js";
 import {
+	assertBroadcast,
 	assertBucket,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
 } from "~workloads/workloads/assertions.js";
+import type { AnyBroadcast } from "~workloads/workloads/stateless/broadcast/router.js";
 
 export function pull(program: Command) {
 	return program
@@ -37,7 +40,7 @@ export function pull(program: Command) {
 }
 
 async function containerForWorkload(
-	workload: StatefulWorkloadWithClient | StatefulWorkload,
+	workload: StatefulWorkloadWithClient | StatefulWorkload | AnyBroadcast,
 ) {
 	console.log("constructor", workload.constructor.name);
 	switch (workload.constructor.name) {
@@ -53,6 +56,9 @@ async function containerForWorkload(
 		case "Bucket":
 			assertBucket(workload);
 			return await new MinioContainer(workload).containerImage();
+		case "Broadcast":
+			assertBroadcast(workload);
+			return await new BroadcastContainer(workload).containerImage();
 	}
 }
 

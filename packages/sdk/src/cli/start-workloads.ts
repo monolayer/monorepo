@@ -9,11 +9,13 @@ import type {
 	StatefulWorkload,
 	StatefulWorkloadWithClient,
 } from "~workloads/workloads/stateful/stateful-workload.js";
+import type { AnyBroadcast } from "~workloads/workloads/stateless/broadcast/router.js";
 
 export async function startWorkloads(
 	workloads: (
 		| StatefulWorkloadWithClient
 		| (StatefulWorkload & { connectionStringEnvVar: string })
+		| AnyBroadcast
 	)[],
 	options: {
 		mode: "dev" | "test";

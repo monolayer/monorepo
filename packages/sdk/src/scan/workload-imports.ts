@@ -13,6 +13,7 @@ import {
 	type Task,
 } from "~workloads/workloads.js";
 import {
+	assertBroadcast,
 	assertBucket,
 	assertCron,
 	assertMySqlDatabase,
@@ -22,6 +23,7 @@ import {
 } from "~workloads/workloads/assertions.js";
 
 import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
+import type { AnyBroadcast } from "~workloads/workloads/stateless/broadcast/router.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModuleImport = Record<string, any>;
@@ -52,9 +54,6 @@ export async function importWorkloads() {
 					if (validWorkload(workloadKind)) {
 						imports.add(workloadPath, workload);
 					}
-					if (workloadPath.endsWith("broadcast.ts")) {
-						imports.addBroadcast(workloadPath, workload);
-					}
 				}
 			}
 		}
@@ -69,6 +68,7 @@ const validConstructor = [
 	"Bucket",
 	"Cron",
 	"Task",
+	"Broadcast",
 ];
 
 function validWorkload(workloadConstructor: string) {
@@ -87,7 +87,8 @@ interface ImportByWorkload {
 	Redis: WorkloadImport<Redis>[];
 	Cron: WorkloadImport<Cron>[];
 	Task: WorkloadImport<Task<unknown>>[];
-	Broadcast: WorkloadImport<unknown>[];
+
+	Broadcast: WorkloadImport<AnyBroadcast>[];
 }
 
 export class WorkloadImports {
@@ -115,6 +116,7 @@ export class WorkloadImports {
 			...this.MySqlDatabase,
 			...this.PostgresDatabase,
 			...this.Redis,
+			...this.Broadcast,
 		].map((i) => i.workload);
 	}
 
@@ -195,6 +197,13 @@ export class WorkloadImports {
 					break;
 				case "Task":
 					assertTask(workload);
+					this.#importsByWorkload[key].push({
+						src,
+						workload,
+					});
+					break;
+				case "Broadcast":
+					assertBroadcast(workload);
 					this.#importsByWorkload[key].push({
 						src,
 						workload,

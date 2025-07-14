@@ -1,4 +1,5 @@
 import path from "path";
+import { Workload } from "~workloads/workloads/workload.js";
 import { RouteMatcher } from "./matcher.js";
 import type { RouteParams } from "./types.js";
 
@@ -107,7 +108,7 @@ export type Simplify<T> = DrainOuterGeneric<
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class Broadcast<T extends Record<string, any>, S> {
+export class Broadcast<T extends Record<string, any>, S> extends Workload {
 	session: (opts: { cookies: Record<string, string> }) => Promise<S>;
 	channels: {
 		[channel in keyof T]: ValidateRoute<channel & string> extends never
@@ -140,6 +141,7 @@ export class Broadcast<T extends Record<string, any>, S> {
 					};
 		},
 	) {
+		super("broadcast");
 		this.session = session;
 		this.channels = channels;
 	}
@@ -176,4 +178,11 @@ export class Broadcast<T extends Record<string, any>, S> {
 			return true;
 		}
 	}
+
+	get connectionStringEnvVar() {
+		return "ML_BROADCAST_URL";
+	}
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyBroadcast = Broadcast<any, any>;
