@@ -75,26 +75,39 @@ export class AppSyncEventsPublisher<
 		this.connectionManager.disconnect();
 	}
 
-	publishTo<T extends keyof C & string>(
+	async publishTo<T extends keyof C & string>(
 		channelName: ValidateUniqueParams<T>,
 		params: RouteParams<T>,
-		data: C[T] extends { channel: Channel<infer P> } ? P : never,
+		data: C[T] extends { channel: Channel<infer P> } ? P[] : never,
 	) {
-		const path = (channelName as string).replace(
-			/\[([^\]]+)\]/g,
-			(match, key) => {
-				return (params as Record<string, string>)[key] || match; // If key is not found, keep the placeholder
-			},
-		);
+		try {
+			const path = (channelName as string).replace(
+				/\[([^\]]+)\]/g,
+				(match, key) => {
+					return (params as Record<string, string>)[key] || match; // If key is not found, keep the placeholder
+				},
+			);
 
-		const id = uuidv4();
-		const events = JSON.stringify(data);
-		const publishMessage = buildPublishMessage(id, `default${path}`, [events], {
-			clientId: this.connectionManager.clientId,
-			host: process.env.ML_BROADCAST_HOST ?? "localhost",
-			Authorization: "--",
-		});
-		this.connectionManager.send(JSON.stringify(publishMessage));
-		return;
+			await this.connect();
+			for (const payload of data) {
+				const events = JSON.stringify(payload);
+				const publishMessage = buildPublishMessage(
+					uuidv4(),
+					`default${path}`,
+					[events],
+					{
+						clientId: this.connectionManager.clientId,
+						host: process.env.ML_BROADCAST_HOST ?? "localhost",
+						Authorization: "--",
+					},
+				);
+				this.connectionManager.send(JSON.stringify(publishMessage));
+			}
+			this.disconnect();
+		} catch (e) {
+			console.error(e);
+			return false;
+		}
+		return true;
 	}
 }
