@@ -59,34 +59,6 @@ will be written to `.env.test.local`.
 Check your framework documentation to see it the `.env.test.local` file is loaded automatically.
 :::
 
-## Production environments
-
-The workload assumes that a PostgreSQL server will be avaliable.
-
-At deployment time, make sure to configure the environment variable name for the workload
-with the connection string for the PostgreSQL database.
-
-## Build output
-
-The build output for the workload is located in the `postgresDatabase` of the `manifest.json`
-and it includes:
-
-- The database name.
-- The environment variable name.
-
-```json
-{
-  "version": "2",
-  "postgresDatabase": [
-    {
-      "name": "products",
-      "connectionStringEnvVar": "ML_PG_PRODUCTS_DATABASE_URL"
-    }
-  ],
-  // ...
-}
-```
-
 ## Examples
 
 ### Workloads in the same database server

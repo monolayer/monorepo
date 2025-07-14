@@ -8,6 +8,7 @@ export default defineConfig({
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{ text: "Quick Start", link: "/guide/quick-start" },
+			{ text: "Workloads", link: "/guide/postgres" },
 			{ text: "API Reference", link: "/reference/api/modules" },
 		],
 		sidebar: {
@@ -22,7 +23,7 @@ export default defineConfig({
 						],
 					},
 					{
-						text: "Workload types",
+						text: "Workloads",
 						items: [
 							{
 								text: "Stateful",
@@ -37,6 +38,7 @@ export default defineConfig({
 								items: [
 									{ text: "Cron", link: "cron" },
 									{ text: "Task", link: "task" },
+									{ text: "Broadcasst", link: "broadcast" },
 								],
 							},
 						],

@@ -56,33 +56,6 @@ See [examples](#examples) on how to configure a client for test.
 Check your framework documentation to see it the `.env.test` file is loaded automatically.
 :::
 
-## Production environments
-
-The workload assumes that an AWS S3 compatible storage will be avaliable.
-
-## Build output
-
-The build output for the workload is located in the `bucket` of the `manifest.json`
-and it includes:
-
-- The bucket name.
-
-:::code-group
-
-```json[Bucket Workload]
-{
-  "version": "2",
-  "bucket": [
-    {
-      "name": "images",
-    }
-  ],
-  // ...
-}
-```
-
-:::
-
 ## Examples
 
 ```ts

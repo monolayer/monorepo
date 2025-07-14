@@ -39,62 +39,6 @@ This workload does not have a test environment.
 
 However, you can test the work function of a `Cron` in your test suite.
 
-## Production environments
-
-You can deploy the `Cron` workload to production environments using the [build ouput](#build-output)
-
-## Build output
-
-### Compiled code
-
-Each `Cron` will be compiled to a single CommonJS file with bundled dependencies which can be run
-through a generated runner script.
-
-The exported code will be located in `.workloads/cron/${cron-file-name}`.
-
-#### Compilation notes
-
-:::warning
-To provide portability across hosting providers, the output code does not include any scheduler.
-
-Also, the compiler doesn't perform any type checking.
-:::
-
-- Code is tree shaken.
-- A source map is included.
-
-### Dockerfile
-
-A Dockerfile for the `Cron` workload is also provided.
-
-Once the image is built, running the container will run the `Cron` workload.
-
-### manifest.json
-
-The `manifest.json` includes a `crons` key with an array of the `Cron` workloads. Each entry has:
-
-- The ID.
-- The entryPoint file name.
-- The path to the compiled code.
-- The schedule.
-
-:::code-group
-
-```json[Cron Workload]
-{
-  "version": "2",
-  "crons": [
-    {
-      "id": "reports",
-      "entryPoint": "index.mjs",
-      "path": "crons/reports",
-      "schedule": "* * * * *"
-    }
-  ],
-  // ...
-}
-```
-
 :::
 
 ## Examples

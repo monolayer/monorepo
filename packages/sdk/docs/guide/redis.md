@@ -53,38 +53,6 @@ will be written to `.env.test`.
 Check your framework documentation to see it the `.env.test` file is loaded automatically.
 :::
 
-## Production environments
-
-The workload assumes that a server compatible with the Redis API will be avaliable.
-
-At deployment time, make sure to configure the environment variable name for the workload
-with the connection string for the Redis server.
-
-## Build output
-
-The build output for the workload is located in the `redis` of the `manifest.json`
-and it includes:
-
-- The ID.
-- The environment variable name.
-
-:::code-group
-
-```json[Redis Workload]
-{
-  "version": "2",
-  "redis": [
-    {
-      "id": "products",
-      "connectionStringEnvVar": "ML_REDIS_PRODUCTS_DATABASE_URL"
-    }
-  ],
-  // ...
-}
-```
-
-:::
-
 ## Example
 
 ```ts
