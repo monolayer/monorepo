@@ -64,17 +64,8 @@ export class ConnectionManager {
 				}),
 			]);
 
-			// this.ws.addEventListener("open", () => {
-			//   // Reset reconnect attempts on successful connection
-			//   this.reconnectAttempts = 0;
-			//   // Send connection_init message
-			//   this.ws?.send(JSON.stringify({ type: "connection_init" }));
-			// });
 			this.ws.onopen = () => {
-				// Reset reconnect attempts on successful connection
 				this.reconnectAttempts = 0;
-				console.log("OPEN");
-				// Send connection_init message
 				this.ws?.send(JSON.stringify({ type: "connection_init" }));
 			};
 
