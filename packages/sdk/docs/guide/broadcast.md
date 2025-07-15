@@ -125,9 +125,9 @@ async function publishBucketUpdate(items: TodosData[]) {
 
 ## Development environment
 
-A docker container for the dev environment is launched with [`npx workloads start dev`](./../reference/cli/start-dev.md)
+A docker container for the dev environment is launched with [`npx monolayer start dev`](./../reference/cli/start-dev.md)
 
-You can stop it with [`npx workloads stop dev`](./../reference/cli/stop-dev.md).
+You can stop it with [`npx monolayer stop dev`](./../reference/cli/stop-dev.md).
 
 After the container is started:
 
@@ -140,9 +140,9 @@ Check your framework documentation to see it the `.env.local` file is loaded aut
 
 ## Test environment
 
-A docker container for the test environment is launched with [`npx workloads start test`](./../reference/cli/start-test.md)
+A docker container for the test environment is launched with [`npx monolayer start test`](./../reference/cli/start-test.md)
 
-You can stop it with [`npx workloads stop test`](./../reference/cli/stop-test.md).
+You can stop it with [`npx monolayer stop test`](./../reference/cli/stop-test.md).
 
 - The environment variable with the connection string for the workload's Docker container
 will be written to `.env.test.local`.

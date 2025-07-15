@@ -7,7 +7,7 @@ Pulls all workloads' Docker images.
 ## Usage
 
 ```bash
-npx workloads pull
+npx monolayer pull
 ```
 
 ## Global Options

@@ -7,7 +7,7 @@ Builds workloads.
 ## Usage
 
 ```bash
-npx workloads build
+npx monolayer build
 ```
 
 The build output will be located in `./.workloads`

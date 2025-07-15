@@ -7,7 +7,7 @@ Lists the status of the Docker containers for the development workloads.
 ## Usage
 
 ```bash
-npx workloads status dev
+npx monolayer status dev
 ```
 
 ## Global Options

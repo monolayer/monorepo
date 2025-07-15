@@ -11,7 +11,7 @@ import { Database } from "~workloads/workloads/stateful/database.js";
  *
  * **NOTES**
  *
- * When launching the development or test containers with `npx workloads start dev`, the environment
+ * When launching the development or test containers with `npx monolayer start dev`, the environment
  * variable with the connection string for the workload's Docker container
  * will be written to the corresponding dotenv file (`.env.local` or `.env.local.test`)
  *

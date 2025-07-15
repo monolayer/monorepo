@@ -7,7 +7,7 @@ Triggers a [Cron](./../../reference//api//main/classes/Cron.md) workload.
 ## Usage
 
 ```bash
-npx workloads trigger cron
+npx monolayer trigger cron
 ```
 
 ## Options

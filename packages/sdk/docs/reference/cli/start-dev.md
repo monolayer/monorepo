@@ -7,7 +7,7 @@ Launches workloads for development.
 ## Usage
 
 ```bash
-npx workloads start dev
+npx monolayer start dev
 ```
 
 ## Global Options

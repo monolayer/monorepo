@@ -7,7 +7,7 @@ Stops test workloads.
 ## Usage
 
 ```bash
-npx workloads stop test
+npx monolayer stop test
 ```
 
 ## Global Options

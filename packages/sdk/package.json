@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/sdk",
-	"version": "1.0.0-dev.2",
+	"version": "1.0.0-dev.3",
 	"description": "Build and deploy full-stack applications with zero infrastructure overhead.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -13,7 +13,7 @@
 	},
 	"type": "module",
 	"bin": {
-		"workloads": "dist/bin/cli.js",
+		"monolayer": "dist/bin/cli.js",
 		"broadcast-server": "dist/bin/broadcast-server.mjs"
 	},
 	"files": [

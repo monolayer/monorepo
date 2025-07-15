@@ -7,7 +7,7 @@ Launches workloads for test.
 ## Usage
 
 ```bash
-npx workloads start test
+npx monolayer start test
 ```
 
 ## Global Options

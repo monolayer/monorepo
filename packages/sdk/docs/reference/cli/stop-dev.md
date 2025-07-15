@@ -7,7 +7,7 @@ Stops development workloads.
 ## Usage
 
 ```bash
-npx workloads stop dev
+npx monolayer stop dev
 ```
 
 ## Global Options

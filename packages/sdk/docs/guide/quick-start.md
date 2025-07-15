@@ -58,7 +58,7 @@ In this example, running `workloads start dev` will:
 You can get the status of the workloads with:
 
 ```bash
-npx workloads status dev
+npx monolayer status dev
 ```
 
 ## Using workloads

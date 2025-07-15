@@ -24,9 +24,9 @@ See [examples](#examples).
 
 ## Development environment
 
-A docker container for the dev environment is launched with [`npx workloads start dev`](./../reference/cli/start-dev.md)
+A docker container for the dev environment is launched with [`npx monolayer start dev`](./../reference/cli/start-dev.md)
 
-You can stop it with [`npx workloads stop dev`](./../reference/cli/stop-dev.md).
+You can stop it with [`npx monolayer stop dev`](./../reference/cli/stop-dev.md).
 
 After the container is started:
 
@@ -42,9 +42,9 @@ Check your framework documentation to see it the `.env` file is loaded automatic
 
 ## Test environment
 
-A docker container for the test environment is launched with [`npx workloads start test`](./../reference/cli/start-test.md)
+A docker container for the test environment is launched with [`npx monolayer start test`](./../reference/cli/start-test.md)
 
-You can stop it with [`npx workloads stop test`](./../reference/cli/stop-test.md).
+You can stop it with [`npx monolayer stop test`](./../reference/cli/stop-test.md).
 
 - The `ML_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
 will be written to `.env`.
