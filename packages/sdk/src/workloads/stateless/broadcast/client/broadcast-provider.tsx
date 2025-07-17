@@ -41,6 +41,7 @@ export function BroadcastContextProvider({
 			setConnected(true);
 		}
 		connect().catch(console.error);
+		return () => ws.disconnect();
 	}, [ws]);
 
 	return (
