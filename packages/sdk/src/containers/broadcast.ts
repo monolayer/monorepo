@@ -19,7 +19,7 @@ export class BroadcastContainer extends ContainerWithURI {
 		command: [
 			"bash",
 			"-c",
-			"npm install --no-save @esbuild/linux-arm64 && npm install -g tsx && tsx watch ./node_modules/.bin/broadcast-server",
+			"npm install -g tsx @esbuild/linux-arm64 && tsx watch ./node_modules/@monolayer/sdk/dist/bin/broadcast-server.mjs",
 		],
 		environment: {},
 		workingDir: "/app",
