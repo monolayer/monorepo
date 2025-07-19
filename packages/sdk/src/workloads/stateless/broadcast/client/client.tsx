@@ -1,18 +1,18 @@
 import { useEffect, useReducer, useState } from "react";
-import type { Channel } from "~workloads/workloads/stateless/broadcast/channel.js";
+import type { ChannelData } from "~workloads/workloads/stateless/broadcast/channel-data.js";
 import { useWebSocket } from "~workloads/workloads/stateless/broadcast/client/broadcast-provider.js";
 import type { RouteParams } from "~workloads/workloads/stateless/broadcast/types.js";
 
 export function broadcastClient<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	C extends Record<string, { channel: Channel<any> }>,
+	C extends Record<string, ChannelData<any>>,
 >() {
 	const useSubscription = <D extends keyof C & string>(
 		channel: D,
 		params: RouteParams<D>,
 	) => {
 		type StateType = typeof channel extends string
-			? C[typeof channel] extends { channel: Channel<infer P> }
+			? C[typeof channel] extends ChannelData<infer P>
 				? P
 				: never
 			: never;

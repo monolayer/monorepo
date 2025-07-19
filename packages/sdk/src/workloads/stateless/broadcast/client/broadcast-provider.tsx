@@ -7,7 +7,7 @@ import {
 	useState,
 	type ReactNode,
 } from "react";
-import type { Channel } from "~workloads/workloads/stateless/broadcast/channel.js";
+import type { ChannelData } from "~workloads/workloads/stateless/broadcast/channel-data.js";
 import { BroadcastClient } from "./app-sync-client.js";
 
 export type BroadcastContext = {
@@ -53,7 +53,7 @@ export function BroadcastContextProvider({
 
 export function useWebSocket<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends Record<string, { channel: Channel<any> }>,
+	T extends Record<string, ChannelData<any>>,
 >() {
 	const context = use(BroadcastProvider);
 	if (!context) {

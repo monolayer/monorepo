@@ -121,11 +121,16 @@ export class Broadcast<T extends Record<string, any>, S> extends Workload {
 							: never;
 						session: S;
 					}) => Promise<boolean>;
-					channel: T[channel];
+					data: T[channel];
 				};
 	};
-	constructor(
-		session: (opts: { cookies: Record<string, string> }) => Promise<S>,
+
+	declare _channelDataType: {
+		[K in keyof T]: T[K];
+	};
+
+	constructor(initOpts: {
+		session?: (opts: { cookies: Record<string, string> }) => Promise<S>;
 		channels: {
 			[channel in keyof T]: ValidateRoute<channel & string> extends never
 				? never
@@ -137,13 +142,19 @@ export class Broadcast<T extends Record<string, any>, S> extends Workload {
 								: never;
 							session: S;
 						}) => Promise<boolean>;
-						channel: T[channel];
+						data: T[channel];
 					};
-		},
-	) {
+		};
+	}) {
 		super("broadcast");
-		this.session = session;
-		this.channels = channels;
+		this.session =
+			initOpts.session ??
+			((async () => {
+				return {};
+			}) as unknown as (opts: {
+				cookies: Record<string, string>;
+			}) => Promise<S>);
+		this.channels = initOpts.channels;
 	}
 
 	async authFn(route: string, operation: "PUBLISH" | "SUBSCRIBE", session: S) {

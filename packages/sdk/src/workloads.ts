@@ -21,7 +21,7 @@ export type {
 	StatefulWorkload,
 	StatefulWorkloadWithClient,
 } from "~workloads/workloads/stateful/stateful-workload.js";
-export { Channel } from "~workloads/workloads/stateless/broadcast/channel.js";
+export { ChannelData } from "~workloads/workloads/stateless/broadcast/channel-data.js";
 export { broadcastClient } from "~workloads/workloads/stateless/broadcast/client/client.js";
 export { Broadcast } from "~workloads/workloads/stateless/broadcast/router.js";
 export type { StatelessWorkload } from "~workloads/workloads/stateless/stateless-workload.js";

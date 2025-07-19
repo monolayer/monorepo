@@ -4,7 +4,7 @@
  */
 
 import { v4 as uuidv4 } from "uuid";
-import type { Channel } from "../channel.js";
+import type { ChannelData } from "../channel-data.js";
 import type { RouteParams, ValidateUniqueParams } from "../types.js";
 import { ConnectionManager } from "./connectionManager.js";
 import { EventEmitter } from "./eventEmitter.js";
@@ -28,7 +28,7 @@ export interface BroadcastClientConfig {
 
 export class BroadcastClient<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	C extends Record<string, { channel: Channel<any> }>,
+	C extends Record<string, ChannelData<any>>,
 > {
 	private declare _channels: C;
 
@@ -110,9 +110,7 @@ export class BroadcastClient<
 	subscribeTo<T extends keyof C & string>(
 		channelName: ValidateUniqueParams<T>,
 		params: RouteParams<T>,
-		callback: (
-			data: C[T] extends { channel: Channel<infer P> } ? P : never,
-		) => void,
+		callback: (data: C[T] extends ChannelData<infer P> ? P : never) => void,
 	) {
 		const path = (channelName as string).replace(
 			/\[([^\]]+)\]/g,
