@@ -1,30 +1,30 @@
 # Configuration
 
-You can configure Workloads in the main config file `monolayer.config.ts` in the
+You can configure the SDK in the main config file `monolayer.config.ts` in the
 root of your project.
 
-## Workloads folder location
+## Workloads location
 
 You can change the location of your workloads with the `workloadsPath` property.
 
 ```ts
 import type { Configuration } from "@monolayer/sdk";
 
-const workloadsConfig: Configuration = {
+const config: Configuration = {
   workloadsPath: "lib/workloads",
 };
 
-export default workloadsConfig;
+export default config;
 ```
 
-## Environment variables folder
+## Environment variables
 
 To change the dotenv file names add the desired file name to `envFileName` property.
 
 ```ts
 import type { Configuration } from "@monolayer/sdk";
 
-const workloadsConfig: Configuration = {
+const config: Configuration = {
   workloadsPath: "lib/workloads",
   envFileName: {
     development: ".env.development",
@@ -32,10 +32,10 @@ const workloadsConfig: Configuration = {
   },
 };
 
-export default workloadsConfig;
+export default config;
 ```
 
-## Workload container image
+## Container images
 
 Each workload uses default a [default](./../reference/api/main/interfaces/Configuration.md) Docker container image.
 
@@ -44,7 +44,7 @@ You can change it in the `containers` property.
 ```ts
 import type { Configuration } from "@monolayer/sdk";
 
-const workloadsConfig: Configuration = {
+const config: Configuration = {
   workloadsPath: "lib/workloads",
   containers: {
     postgresDatabase: {
@@ -53,7 +53,7 @@ const workloadsConfig: Configuration = {
   }
 };
 
-export default workloadsConfig;
+export default config;
 ```
 
 ## Workload container ports
@@ -65,7 +65,7 @@ You can change it in the `containers` property.
 ```ts
 import type { Configuration } from "@monolayer/sdk";
 
-const workloadsConfig: Configuration = {
+const confing: Configuration = {
   workloadsPath: "lib/workloads",
   containers: {
     postgresDatabase: {
@@ -77,5 +77,5 @@ const workloadsConfig: Configuration = {
   }
 };
 
-export default workloadsConfig;
+export default config;
 ```
