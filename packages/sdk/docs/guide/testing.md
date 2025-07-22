@@ -8,12 +8,6 @@ The [test-helpers](./../reference/api//test-helpers/index.md#functions) module p
 | - | - |
 | [`truncatePostgresTables`](./../reference/api/test-helpers/functions/truncatePostgresTables.md) | Empties all tables in a database. |
 
-## MysqlDatabase
-
-| Helper | Description |
-| - | - |
-| [`truncateMySqlTables`](./../reference/api/test-helpers/functions/truncateMySqlTables.md) | Empties all tables in a database. |
-
 ## Redis
 
 | Helper | Description |
