@@ -11,7 +11,7 @@ import {
  * import { BeforeRollout } from "@monolayer/sdk";
  *
  * const rollout = new BeforeRollout("before-1", {
- *   scripts: "db:migrate",
+ *   script: "db:migrate",
  * });
  *
  * export default rollout;

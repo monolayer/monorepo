@@ -11,7 +11,7 @@ import {
  * import { Bootstrap } from "@monolayer/sdk";
  *
  * const bootstrap = new Bootstrap("bootstrap", {
- *   scripts: "db:create",
+ *   script: "db:create",
  * });
  *
  * export default bootstrap;
