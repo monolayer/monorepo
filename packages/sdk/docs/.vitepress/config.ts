@@ -41,6 +41,14 @@ export default defineConfig({
 									{ text: "Broadcasst", link: "broadcast" },
 								],
 							},
+							{
+								text: "App Lifecycle",
+								items: [
+									{ text: "Bootstrap", link: "bootstrap" },
+									{ text: "BeforeRollout", link: "before-rollout" },
+									{ text: "AfterRollout", link: "after-rollout" },
+								],
+							},
 						],
 					},
 					{
