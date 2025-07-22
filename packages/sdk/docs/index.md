@@ -5,6 +5,7 @@ layout: home
 hero:
   name: "monolayer SDK"
   tagline: Build and deploy full-stack applications with zero infrastructure overhead.
+  actions:
     - theme: alt
       text: Quick Start
       link: /guide/quick-start
