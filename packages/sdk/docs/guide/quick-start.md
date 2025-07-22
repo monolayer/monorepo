@@ -31,12 +31,7 @@ We'll define a `PostgresDatabase` workload that represents a PostgreSQL database
 import { PostgreSQL } from "@monolayer/sdk";
 import pg from "pg";
 
-export const producstDb = new PostgresDatabase("products",
-  {
-    client: (envVarName) =>
-      new pg.Pool({ connectionString: process.env[envVarName],}),
-  }
-);
+export const producstDb = new PostgresDatabase("products");
 ```
 
 :::
@@ -63,14 +58,20 @@ npx monolayer status dev
 
 ## Using workloads
 
-You can access your workload client with the `client` accessor in your codebase.
+You can configure your database client with the connection string that's created.
 
 ```ts
 import { producstDb } from "src/workloads/postgres";
+import pg from "pg";
 
 // Skip if your web framework already loads the `.env` file.
 import dotenv from "dotenv";
 dotenv.config();
+
+const client = new pg.Pool({
+  // The environment variable is set when when you launch `monolayer status dev`
+  connectionString: process.env[productsDb.connectionStringEnvVar],
+});
 
 // Querying the products database.
 await producstDb.client.query("SELECT 1");
