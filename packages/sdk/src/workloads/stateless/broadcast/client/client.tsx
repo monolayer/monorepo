@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useReducer, useState } from "react";
 import type { ChannelData } from "~workloads/workloads/stateless/broadcast/channel-data.js";
 import { useWebSocket } from "~workloads/workloads/stateless/broadcast/client/broadcast-provider.js";
