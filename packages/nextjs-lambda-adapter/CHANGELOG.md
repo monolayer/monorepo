@@ -8,43 +8,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.5] - 2025-06-04
 
-### Fix
+### Fixed
 
 - ImageOptimizationCache cacheDir location.
 
 ## [4.0.4] - 2025-06-03
 
-### Fix
+### Fixed
 
 - Stale S3 cache keys.
 
 ## [4.0.3-beta-1] - 2025-06-02
 
-### Fix
+### Fixed
 
 - Link headers.
 
 ## [4.0.2-beta-1] - 2025-05-26
 
-### Fix
+### Fixed
 
 - Loading packages that keep the event loop open.
 
 ## [4.0.1-beta.5] - 2025-05-08
 
-### Fix
+### Fixed
 
 - next/image handling.
 
 ## [4.0.2] - 2025-04-13
 
-### Fix
+### Fixed
 
 - Parse
 
 ## [4.0.1-beta.1] - 2025-04-13
 
-### Fix
+### Fixed
 
 - Dockerfile generation.
 
