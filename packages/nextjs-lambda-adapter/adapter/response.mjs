@@ -63,11 +63,30 @@ export class AppResponse extends http.ServerResponse {
 				([key, _]) => !headersToFilterOut.includes(key.toLowerCase()),
 			),
 		);
+
 		const link = awsMetadata.headers["link"];
 		if (link && Array.isArray(link)) {
-			awsMetadata.headers["link"] = awsMetadata.headers["link"].join(", ");
+			awsMetadata.headers["link"] = link.join(", ");
 		}
 
+		const location = awsMetadata.headers["location"];
+		if (location && Array.isArray(location)) {
+			awsMetadata.headers["location"] = location[0];
+		}
+
+		if (
+			awsMetadata.headers["content-type"] &&
+			Array.isArray(awsMetadata.headers["content-type"])
+		) {
+			awsMetadata.headers["content-type"] = location[0];
+		}
+
+		if (
+			awsMetadata.headers["Content-Type"] &&
+			Array.isArray(awsMetadata.headers["Content-Type"])
+		) {
+			awsMetadata.headers["Content-Type"] = location[0];
+		}
 		return awsMetadata;
 	}
 }
