@@ -27,11 +27,7 @@ export class AppResponse extends http.ServerResponse {
 
 	writeHead(statusCode, statusMessage, headers) {
 		super.writeHead(statusCode, statusMessage, headers);
-		// eslint-disable-next-line no-undef
-		awslambda.HttpResponseStream.from(
-			this._responseStream,
-			this.awsMetadataPrelude(),
-		);
+		HttpResponseStream.from(this._responseStream, this.awsMetadataPrelude());
 	}
 
 	write(chunk, encoding, callback) {
@@ -88,5 +84,35 @@ export class AppResponse extends http.ServerResponse {
 			awsMetadata.headers["Content-Type"] = location[0];
 		}
 		return awsMetadata;
+	}
+}
+
+/**
+ * Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * HttpResponseStream is NOT used by the runtime.
+ * It is only exposed in the `awslambda` variable for customers to use.
+ */
+/*
+ * Adapted: Flush prelude to underlyingStream immediately.
+ */
+
+const METADATA_PRELUDE_CONTENT_TYPE =
+	"application/vnd.awslambda.http-integration-response";
+const DELIMITER_LEN = 8;
+
+class HttpResponseStream {
+	static from(underlyingStream, prelude) {
+		underlyingStream.setContentType(METADATA_PRELUDE_CONTENT_TYPE);
+
+		// JSON.stringify is required. NULL byte is not allowed in metadataPrelude.
+		const metadataPrelude = JSON.stringify(prelude);
+
+		underlyingStream.write(metadataPrelude);
+
+		// Write 8 null bytes after the JSON prelude.
+		underlyingStream.write(new Uint8Array(DELIMITER_LEN));
+
+		return underlyingStream;
 	}
 }
