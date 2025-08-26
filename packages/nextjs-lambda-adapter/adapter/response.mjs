@@ -70,18 +70,14 @@ export class AppResponse extends http.ServerResponse {
 			awsMetadata.headers["location"] = location[0];
 		}
 
-		if (
-			awsMetadata.headers["content-type"] &&
-			Array.isArray(awsMetadata.headers["content-type"])
-		) {
-			awsMetadata.headers["content-type"] = location[0];
+		let contentType = awsMetadata.headers["content-type"];
+		if (contentType && Array.isArray(contentType)) {
+			awsMetadata.headers["content-type"] = contentType[0];
 		}
 
-		if (
-			awsMetadata.headers["Content-Type"] &&
-			Array.isArray(awsMetadata.headers["Content-Type"])
-		) {
-			awsMetadata.headers["Content-Type"] = location[0];
+		contentType = awsMetadata.headers["Content-Type"];
+		if (contentType && Array.isArray(contentType)) {
+			awsMetadata.headers["Content-Type"] = contentType[0];
 		}
 		return awsMetadata;
 	}
