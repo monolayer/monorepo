@@ -55,7 +55,8 @@ export class AppResponse extends http.ServerResponse {
 		if (cookies) {
 			awsMetadata.cookies = [cookies].flat();
 		}
-		const headersToFilterOut = ["content-length", "set-cookie"];
+		const headersToFilterOut = ["set-cookie"];
+
 		awsMetadata.headers = Object.fromEntries(
 			Object.entries(this.getHeaders()).filter(
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
