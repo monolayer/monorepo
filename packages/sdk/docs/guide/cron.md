@@ -17,7 +17,7 @@ import { Cron } from "@monolayer/sdk";
 
 const reports = new Cron("reports", {
   schedule: "* * * * *",
-  work: () => {
+  run: async () => {
     // Do something;
   },
 });
@@ -48,7 +48,7 @@ import { Cron } from "@monolayer/sdk";
 
 const reports = new Cron("reports", {
   schedule: "* * * * *",
-  work: () => {
+  run: async () => {
     // Do something;
   },
 });
