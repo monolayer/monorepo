@@ -45,7 +45,7 @@ export class AppResponse extends http.ServerResponse {
 		if (chunk) this._responseWithContent = true;
 		this._readableResponse.push(chunk, encoding);
 		if (!this._responseWithContent) {
-			this._readableResponse.push("");
+			this._readableResponse.push("\n");
 		}
 		this._readableResponse.push(null);
 	}
