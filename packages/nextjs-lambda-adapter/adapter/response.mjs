@@ -15,6 +15,7 @@ export class AppResponse extends http.ServerResponse {
 
 	_responseStream;
 	_readableResponse;
+	_responseWithContent;
 
 	constructor(req, responseStream) {
 		super(req);
@@ -23,6 +24,7 @@ export class AppResponse extends http.ServerResponse {
 		this.assignSocket(new Writable());
 		this._readableResponse = new ReadableResponse();
 		this._readableResponse.pipe(this._responseStream);
+		this._responseWithContent = false;
 	}
 
 	writeHead(statusCode, statusMessage, headers) {
@@ -31,13 +33,20 @@ export class AppResponse extends http.ServerResponse {
 	}
 
 	write(chunk, encoding, callback) {
+		if (!this._responseWithContent) {
+			this._responseWithContent = true;
+		}
 		const res = this._readableResponse.push(chunk, encoding);
 		if (callback) callback();
 		return res;
 	}
 
 	end(chunk, encoding) {
+		if (chunk) this._responseWithContent = true;
 		this._readableResponse.push(chunk, encoding);
+		if (!this._responseWithContent) {
+			this._readableResponse.push("");
+		}
 		this._readableResponse.push(null);
 	}
 
