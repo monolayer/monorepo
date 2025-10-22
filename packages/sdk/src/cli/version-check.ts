@@ -12,7 +12,7 @@ export async function checkVersion(installedVersion: string): Promise<void> {
 
 		if (installedVersion < latestVersion) {
 			console.log(
-				`A new version of @monolayer/sdk is available. Current version: ${installedVersion}, Latest version: ${latestVersion}`,
+				`\nA new version of @monolayer/sdk is available. Current version: ${installedVersion}, Latest version: ${latestVersion}\n`,
 			);
 		}
 	} catch {

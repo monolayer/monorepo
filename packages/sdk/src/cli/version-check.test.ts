@@ -52,7 +52,7 @@ describe("checkVersion", () => {
 		await checkVersion("1.0.0");
 
 		expect(consoleLogSpy).toHaveBeenCalledWith(
-			"A new version of @monolayer/sdk is available. Current version: 1.0.0, Latest version: 1.0.1",
+			"\nA new version of @monolayer/sdk is available. Current version: 1.0.0, Latest version: 1.0.1\n",
 		);
 	});
 
