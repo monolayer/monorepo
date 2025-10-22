@@ -1,6 +1,6 @@
 # Testing Helpers
 
-The [test-helpers](./../reference/api//test-helpers/index.md#functions) module provides functions to make testing applications with workloads easier:
+The [test-helpers](./../reference/api/test-helpers/index.md#functions) module provides functions to make testing applications with workloads easier:
 
 ## PostgresDatabase
 
@@ -12,4 +12,4 @@ The [test-helpers](./../reference/api//test-helpers/index.md#functions) module p
 
 | Helper | Description |
 | - | - |
-| [`flushRedis`](./../reference/api/test-helpers/functions/flushRedis.md) | deletes all the keys of the currently selected database. |
+| [`flushRedis`](./../reference/api/test-helpers/functions/flushRedis.md) | Deletes all the keys of the currently selected database. |

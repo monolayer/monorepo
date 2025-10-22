@@ -6,7 +6,6 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  *
  * The `Bucket` workload is initialized with:
  * - A valid bucket name.
- * - An optional Options object to set public read accesss.
  *
  * **NOTES**
  *
@@ -20,31 +19,28 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  * @example
  * ```ts
  * import { Bucket } from "@monolayer/sdk";
+ *
+ * const documents = new Bucket("documents");
+ *
+ * export default documents;
+ *
+ * // Client configuration
+ *
  * import { S3Client } from "@aws-sdk/client-s3";
+ * import { bucketLocalConfiguration } from "@monolayer/sdk";
+ * export const s3Client = new S3Client({
+ *   ...bucketLocalConfiguration(),
+ * });
  *
- * const imagesBucket = new Bucket("workloads-images");
- * const documentsBucket = new Bucket("workloads-images", { publicRead: true });
+ * // Get Object
  *
- * const s3Client = new S3Client({
- *   // Configure forcePathStyle and endpoint
- *   // when the dev or test container is running
- *   ...(process.env.ML_AWS_ENDPOINT_URL
- *     ? {
- *         forcePathStyle: true,
- *         endpoint: process.env.ML_AWS_ENDPOINT_URL,
- *        }
- *     : {}),
- *   // Other configuration options
- * }),
-
  * const response = await s3Client.send(
  *   new GetObjectCommand({
- *     Bucket: imagesBucket.name,
+ *     Bucket: documents.name,
  *     Key: "README.md",
  *   }),
  * );
  *
- * const documentsBucket = new Bucket("workloads-images", { publicRead: true });
  * ```
  */
 export class Bucket extends StatefulWorkload {

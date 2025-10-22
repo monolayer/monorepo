@@ -4,11 +4,11 @@ Workload for recurring tasks.
 
 ## Description
 
-With this workload you recurring tasks for your application.
+With this workload, you can define recurring tasks for your application.
 
-A [`Cron`](./../reference/api/main/classes/Cron.md) workload is initialized with a unique id and the following options:
+A [`Cron`](./../reference/api/main/classes/Cron.md) workload is initialized with a unique ID and the following options:
 
-- [schedule](./../reference/api/main/interfaces/CronOptions.md#properties) in [unix-cron](https://man7.org/linux/man-pages/man5/crontab.5.html) format to specify it should run.
+- [schedule](./../reference/api/main/interfaces/CronOptions.md#properties) in [unix-cron](https://man7.org/linux/man-pages/man5/crontab.5.html) format to specify when it should run.
 
 - [run](./../reference/api/main/interfaces/CronOptions.md#properties) function with the code that will be executed.
 
@@ -37,7 +37,7 @@ You can trigger a `Cron` workload on demand with the [trigger cron](./../referen
 
 This workload does not have a test environment.
 
-However, you can test the work function of a `Cron` in your test suite.
+However, you can test the `run` function of a `Cron` workload in your test suite.
 
 :::
 

@@ -7,7 +7,7 @@
 - A project developed with TypeScript.
 :::
 
-In your project directory root run:
+In your project's root directory, run:
 
 ```bash
 npm install @monolayer/sdk

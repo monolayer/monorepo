@@ -4,13 +4,13 @@ level: 4
 
 # Bootstrap
 
-Workload to run an script to bootstrap an application.
+Workload to run a script to bootstrap an application.
 
 ## Description
 
-With this workload you can define an npm script to run when rolling out a fresh application.
+With this workload, you can define an npm script to run when rolling out a fresh application.
 
-A [`Bootstrap`](./../reference/api/main/classes/Bootstrap.md) workload is initialized with an id an a script name.
+A [`Bootstrap`](./../reference/api/main/classes/Bootstrap.md) workload is initialized with an ID and a script name.
 
 ```ts
 import { Bootstrap } from "@monolayer/sdk";

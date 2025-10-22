@@ -1,7 +1,6 @@
 # Configuration
 
-You can configure the SDK in the main config file `monolayer.config.ts` in the
-root of your project.
+You can configure the SDK in the main configuration file, `monolayer.config.ts`, located in the root of your project.
 
 ## Workloads location
 
@@ -19,7 +18,7 @@ export default config;
 
 ## Environment variables
 
-To change the dotenv file names add the desired file name to `envFileName` property.
+To change the dotenv file names, add the desired file name to the `envFileName` property.
 
 ```ts
 import type { Configuration } from "@monolayer/sdk";
@@ -37,9 +36,9 @@ export default config;
 
 ## Container images
 
-Each workload uses default a [default](./../reference/api/main/interfaces/Configuration.md) Docker container image.
+Each workload uses a [default](./../reference/api/main/interfaces/Configuration.md) Docker container image by default.
 
-You can change it in the `containers` property.
+You can change this in the `containers` property.
 
 ```ts
 import type { Configuration } from "@monolayer/sdk";
@@ -58,14 +57,14 @@ export default config;
 
 ## Workload container ports
 
-Each Docker container for a workload publishes by [default](./../reference/api/main/interfaces/Configuration.md) container ports to the host.
+Each Docker container for a workload publishes container ports to the host by [default](./../reference/api/main/interfaces/Configuration.md).
 
-You can change it in the `containers` property.
+You can change this in the `containers` property.
 
 ```ts
 import type { Configuration } from "@monolayer/sdk";
 
-const confing: Configuration = {
+const config: Configuration = {
   workloadsPath: "lib/workloads",
   containers: {
     postgresDatabase: {

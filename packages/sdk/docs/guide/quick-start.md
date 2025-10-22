@@ -11,8 +11,8 @@ with the following contents:
 import type { Configuration } from "@monolayer/sdk";
 
 const config: Configuration = {
-  // workloadsPath points to a folder where the workloads with be defined.
-  // Change it to relative path of your choice inside your project.
+  // `workloadsPath` points to the folder where the workloads will be defined.
+  // Change it to a relative path of your choice within your project.
   workloadsPath: "src/workloads",
 };
 
@@ -31,7 +31,7 @@ We'll define a `PostgresDatabase` workload that represents a PostgreSQL database
 import { PostgreSQL } from "@monolayer/sdk";
 import pg from "pg";
 
-export const producstDb = new PostgresDatabase("products");
+export const productsDb = new PostgresDatabase("products");
 ```
 
 :::
@@ -39,18 +39,18 @@ export const producstDb = new PostgresDatabase("products");
 ## Launching workloads
 
 ```bash
-npx workload start dev
+npx monolayer start dev
 ```
 
 \
-In this example, running `workloads start dev` will:
+In this example, running `npx monolayer start dev` will:
 
-1. Launch a docker container with a `PostgresSQL` database
-2. Create the database `products` if it does not exist.
-3. Write the connection string for the server to the `.env` file.
+1. Launch a Docker container with a PostgreSQL database
+2. Create the `products` database if it does not already exist.
+3. Write the connection string for the server to the `.env.local` file.
 
 \
-You can get the status of the workloads with:
+You can check the status of the workloads with:
 
 ```bash
 npx monolayer status dev
@@ -58,10 +58,10 @@ npx monolayer status dev
 
 ## Using workloads
 
-You can configure your database client with the connection string that's created.
+You can configure your database client with the created connection string.
 
 ```ts
-import { producstDb } from "src/workloads/postgres";
+import { productsDb } from "src/workloads/postgres";
 import pg from "pg";
 
 // Skip if your web framework already loads the `.env` file.
@@ -69,10 +69,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const client = new pg.Pool({
-  // The environment variable is set when when you launch `monolayer status dev`
+  // The environment variable is set when you launch `npx monolayer start dev`
   connectionString: process.env[productsDb.connectionStringEnvVar],
 });
 
 // Querying the products database.
-await producstDb.client.query("SELECT 1");
+await client.query("SELECT 1");
 ```

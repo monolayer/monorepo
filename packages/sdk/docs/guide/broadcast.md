@@ -6,11 +6,11 @@ Workload for implementing live-updating user interfaces.
 
 With this workload you can efficiently publish data from the server to connected clients, instead of continually polling the server for data changes from the client.
 
-A [`Broadcast`](./../reference/api/main/classes/Broadcast.md) in initialized with following arguments:
+A [`Broadcast`](./../reference/api/main/classes/Broadcast.md) is initialized with the following arguments:
 
-- [session](./../reference/api/main/classes/Broadcast.md#param): function to set the client session.
+- [session](./../reference/api/main/classes/Broadcast.md#param): A function to set the client session.
 
-- [channels](./../reference/api/main/classes/Broadcast.md#param-1): An object where keys are route strings and values are objects defining the channel and an optional authorization logic.
+- [channels](./../reference/api/main/classes/Broadcast.md#param-1): An object where keys are route strings, and values are objects defining the channel and optional authorization logic.
 
 ```ts
 import { Broadcast, Channel } from "@monolayer/sdk";
@@ -34,7 +34,7 @@ export type Channels = typeof broadcast.channels;
 ```
 
 :::info **Important**
-Export the `Broadcast` workload as the `default` export and only one `Broadcast`workload across all workload files.
+Export the `Broadcast` workload as the `default` export, and ensure there is only one `Broadcast` workload across all workload files.
 :::
 
 ::: code-group
@@ -125,7 +125,7 @@ async function publishBucketUpdate(items: TodosData[]) {
 
 ## Development environment
 
-A docker container for the dev environment is launched with [`npx monolayer start dev`](./../reference/cli/start-dev.md)
+A Docker container for the dev environment is launched with [`npx monolayer start dev`](./../reference/cli/start-dev.md)
 
 You can stop it with [`npx monolayer stop dev`](./../reference/cli/stop-dev.md).
 
@@ -135,12 +135,12 @@ After the container is started:
 will be written to `.env.local`.
 
 :::info
-Check your framework documentation to see it the `.env.local` file is loaded automatically.
+Check your framework's documentation to see if the `.env.local` file is loaded automatically.
 :::
 
 ## Test environment
 
-A docker container for the test environment is launched with [`npx monolayer start test`](./../reference/cli/start-test.md)
+A Docker container for the test environment is launched with [`npx monolayer start test`](./../reference/cli/start-test.md)
 
 You can stop it with [`npx monolayer stop test`](./../reference/cli/stop-test.md).
 
@@ -148,5 +148,5 @@ You can stop it with [`npx monolayer stop test`](./../reference/cli/stop-test.md
 will be written to `.env.test.local`.
 
 :::info
-Check your framework documentation to see it the `.env.test.local` file is loaded automatically.
+Check your framework's documentation to see if the `.env.test.local` file is loaded automatically.
 :::

@@ -4,13 +4,13 @@ Workload for AWS S3 compatible storage.
 
 ## Description
 
-With this workload you define AWS S3 compatible storages.
+With this workload, you can define AWS S3 compatible storage.
 
 A [`Bucket`](./../reference/api/main/classes/Bucket.md) workload is initialized with a valid bucket name.
 
 See [examples](#examples).
 
-Each workload has the `ML_AWS_ENDPOINT_URL` environment variable name associated with it to hold the endpoint url to connect to development and test environments.
+Each workload has the `ML_AWS_ENDPOINT_URL` environment variable associated with it to hold the endpoint URL for connecting to development and test environments.
 
 ## Client
 
@@ -24,57 +24,61 @@ See [examples](#examples).
 
 ## Development environment
 
-A docker container for the dev environment is launched with [`npx monolayer start dev`](./../reference/cli/start-dev.md)
+A Docker container for the dev environment is launched with [`npx monolayer start dev`](./../reference/cli/start-dev.md)
 
 You can stop it with [`npx monolayer stop dev`](./../reference/cli/stop-dev.md).
 
 After the container is started:
 
-- The `ML_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
+- The `ML_AWS_ENDPOINT_URL` environment variable, containing the endpoint URL for the workload's Docker container
 will be written to `.env`.
 - The bucket will be created if it does not exist.
 
 See [examples](#examples) on how to configure a client for development.
 
 :::info
-Check your framework documentation to see it the `.env` file is loaded automatically.
+Check your framework's documentation to see if the `.env` file is loaded automatically.
 :::
 
 ## Test environment
 
-A docker container for the test environment is launched with [`npx monolayer start test`](./../reference/cli/start-test.md)
+A Docker container for the test environment is launched with [`npx monolayer start test`](./../reference/cli/start-test.md)
 
 You can stop it with [`npx monolayer stop test`](./../reference/cli/stop-test.md).
 
-- The `ML_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
+- The `ML_AWS_ENDPOINT_URL` environment variable, containing the endpoint URL for the workload's Docker container
 will be written to `.env`.
 - The bucket will be created if it does not exist.
 
-See [examples](#examples) on how to configure a client for test.
+See the [examples](#examples) on how to configure a client for testing.
 
 :::info
-Check your framework documentation to see it the `.env.test` file is loaded automatically.
+Check your framework's documentation to see if the `.env.test` file is loaded automatically.
 :::
 
 ## Examples
 
-```ts
+ ```ts
 import { Bucket } from "@monolayer/sdk";
-import { S3Client } from "@aws-sdk/client-s3";
 
-const imagesBucket = new Bucket(
-  "workloads-images",
-  () =>
-    new S3Client({
-     // Configure forcePathStyle and endpoint
-     // when the dev or test container is running
-     ...(process.env.ML_AWS_ENDPOINT_URL
-       ? {
-           forcePathStyle: true,
-           endpoint: process.env.ML_AWS_ENDPOINT_URL,
-         }
-       : {}),
-     // Other configuration options
-   }),
+const documents = new Bucket("documents");
+
+export default documents;
+
+// Client configuration
+
+import { S3Client } from "@aws-sdk/client-s3";
+import { bucketLocalConfiguration } from "@monolayer/sdk";
+export const s3Client = new S3Client({
+  ...bucketLocalConfiguration(),
+});
+
+// Get Object
+
+const response = await s3Client.send(
+  new GetObjectCommand({
+    Bucket: documents.name,
+    Key: "README.md",
+  }),
 );
 ```

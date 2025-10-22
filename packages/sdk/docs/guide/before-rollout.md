@@ -4,13 +4,13 @@ level: 4
 
 # BeforeRollout
 
-Workload to run an script to before a new application version has been deployed.
+Workload to run a script before a new application version is deployed.
 
 ## Description
 
-With this workload you can define an npm script to run before rolling out a new application version.
+With this workload, you can define an npm script to run before rolling out a new application version.
 
-A [`BeforeRollout`](./../reference/api/main/classes/BeforeRollout.md) workload is initialized with an id an a script name.
+A [`BeforeRollout`](./../reference/api/main/classes/BeforeRollout.md) workload is initialized with an ID and a script name.
 
 ```ts
 import { BeforeRollout } from "@monolayer/sdk";

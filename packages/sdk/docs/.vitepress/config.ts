@@ -38,7 +38,7 @@ export default defineConfig({
 								items: [
 									{ text: "Cron", link: "cron" },
 									{ text: "Task", link: "task" },
-									{ text: "Broadcasst", link: "broadcast" },
+									{ text: "Broadcast", link: "broadcast" },
 								],
 							},
 							{
