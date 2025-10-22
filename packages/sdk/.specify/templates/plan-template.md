@@ -31,7 +31,11 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- **Workload-Centric Architecture**: Does the proposed feature align with the workload abstraction?
+- **Zero-Infrastructure Overhead**: Does the feature abstract away infrastructure concerns?
+- **CLI-First Interface**: Is the feature exposed through the `monolayer` CLI?
+- **Convention over Configuration**: Does the feature favor sensible defaults and conventions?
+- **Comprehensive Testing**: Are `vitest` tests included for the feature?
 
 ## Project Structure
 
