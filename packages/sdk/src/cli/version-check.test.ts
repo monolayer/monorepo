@@ -54,9 +54,6 @@ describe("checkVersion", () => {
 		expect(consoleLogSpy).toHaveBeenCalledWith(
 			"A new version of @monolayer/sdk is available. Current version: 1.0.0, Latest version: 1.0.1",
 		);
-		expect(consoleLogSpy).toHaveBeenCalledWith(
-			"To update, run: pnpm install -g @monolayer/sdk@latest",
-		);
 	});
 
 	it("should not log a message if the current version is the latest", async () => {

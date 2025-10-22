@@ -14,7 +14,6 @@ export async function checkVersion(installedVersion: string): Promise<void> {
 			console.log(
 				`A new version of @monolayer/sdk is available. Current version: ${installedVersion}, Latest version: ${latestVersion}`,
 			);
-			console.log("To update, run: pnpm install -g @monolayer/sdk@latest");
 		}
 	} catch {
 		// Silently fail on network errors or parsing errors
