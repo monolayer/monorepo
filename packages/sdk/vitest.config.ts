@@ -13,6 +13,7 @@ export default defineConfig({
 		env: {
 			// DEBUG: "testcontainers",
 		},
+		silent: false,
 	},
 	server: {
 		watch: {

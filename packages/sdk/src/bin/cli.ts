@@ -8,12 +8,16 @@ import { start } from "~workloads/cli/actions/start.js";
 import { status } from "~workloads/cli/actions/status.js";
 import { stop } from "~workloads/cli/actions/stop.js";
 import { trigger } from "~workloads/cli/actions/trigger.js";
+import { checkVersion } from "../cli/version-check.js";
+
+const CURRENT_VERSION = "1.0.1";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
 }
 
 async function main() {
+	await checkVersion(CURRENT_VERSION);
 	process.env.TESTCONTAINERS_RYUK_DISABLED = "true";
 	const program = new Command() as unknown as CommandExtra;
 
