@@ -3,6 +3,7 @@ import { kebabCase, snakeCase } from "case-anything";
 import { exit } from "process";
 import prompts from "prompts";
 import { addDrizzlePostgres } from "~workloads/scaffolding/drizzle.js";
+import { addPostgresWorkload } from "~workloads/scaffolding/postgres-database-workload.js";
 import { addPrismaPosgres } from "~workloads/scaffolding/prisma.js";
 
 export function add(program: Command) {
@@ -15,8 +16,15 @@ function postgresDatabase(program: Command) {
 	return program
 		.command("postgres-database")
 		.description("add a postgreDatabase workload")
-		.action(async () => {
+		.option("--skip-components", "Skip installation of ORM components")
+		.action(async (options) => {
 			const database = await promptDatabaseName();
+
+			if (options.skipComponents) {
+				addPostgresWorkload(database.id);
+				return;
+			}
+
 			const orm = await promptORM();
 			switch (orm) {
 				case "prisma":
