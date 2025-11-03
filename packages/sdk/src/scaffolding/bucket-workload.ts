@@ -1,6 +1,5 @@
-import { writeFileSync } from "fs";
 import ora from "ora";
-import path from "path";
+import { writeWorkload } from "./workload.js";
 
 type Bucket = {
 	id: string;
@@ -11,7 +10,7 @@ export function addBucketWorkload(bucket: Bucket) {
 	const template = bucketWorkload(bucket);
 	const spinner = ora();
 	spinner.start(`Create bucket workload in ./workloads/${bucket.id}.ts`);
-	writeFileSync(path.join("workloads", `${bucket.id}.ts`), template);
+	writeWorkload(bucket.id, template);
 	spinner.succeed();
 }
 

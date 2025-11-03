@@ -1,7 +1,6 @@
 import { pascalCase } from "case-anything";
-import { writeFileSync } from "fs";
 import ora from "ora";
-import path from "path";
+import { writeWorkload } from "./workload.js";
 
 type Task = {
 	id: string;
@@ -12,7 +11,7 @@ export function addTaskWorkload(task: Task) {
 	const template = taskWorkload(task);
 	const spinner = ora();
 	spinner.start(`Create task workload in ./workloads/${task.id}.ts`);
-	writeFileSync(path.join("workloads", `${task.id}.ts`), template);
+	writeWorkload(task.id, template);
 	spinner.succeed();
 }
 

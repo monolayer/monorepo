@@ -1,6 +1,5 @@
-import { writeFileSync } from "fs";
 import ora from "ora";
-import path from "path";
+import { writeWorkload } from "./workload.js";
 
 type Cron = {
 	id: string;
@@ -11,7 +10,7 @@ export function addCronWorkload(cron: Cron) {
 	const template = cronWorkload(cron);
 	const spinner = ora();
 	spinner.start(`Create cron workload in ./workloads/${cron.id}.ts`);
-	writeFileSync(path.join("workloads", `${cron.id}.ts`), template);
+	writeWorkload(cron.id, template);
 	spinner.succeed();
 }
 

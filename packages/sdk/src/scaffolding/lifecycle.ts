@@ -1,6 +1,5 @@
-import { writeFileSync } from "fs";
 import ora from "ora";
-import path from "path";
+import { writeWorkload } from "./workload.js";
 
 type Lifecycle = {
 	id: string;
@@ -14,10 +13,7 @@ export function addBeforeRolloutWorkload(lifecycle: Lifecycle) {
 	spinner.start(
 		`Create before rollout workload in ./workloads/${lifecycle.id}.ts`,
 	);
-	writeFileSync(
-		path.join("workloads", `before-rollout-${lifecycle.id}.ts`),
-		template,
-	);
+	writeWorkload(`before-rollout-${lifecycle.id}`, template);
 	spinner.succeed();
 }
 
@@ -38,10 +34,7 @@ export function addAfterRolloutWorkload(lifecycle: Lifecycle) {
 	spinner.start(
 		`Create after rollout workload in ./workloads/${lifecycle.id}.ts`,
 	);
-	writeFileSync(
-		path.join("workloads", `after-rollout-${lifecycle.id}.ts`),
-		template,
-	);
+	writeWorkload(`after-rollout-${lifecycle.id}`, template);
 	spinner.succeed();
 }
 
@@ -62,10 +55,7 @@ export function addBootstrapWorkload(lifecycle: Lifecycle) {
 	spinner.start(
 		`Create before rollout workload in ./workloads/${lifecycle.id}.ts`,
 	);
-	writeFileSync(
-		path.join("workloads", `bootstrap-${lifecycle.id}.ts`),
-		template,
-	);
+	writeWorkload(`bootstrap-${lifecycle.id}`, template);
 	spinner.succeed();
 }
 

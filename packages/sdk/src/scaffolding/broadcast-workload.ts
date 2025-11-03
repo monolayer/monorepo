@@ -1,12 +1,11 @@
-import { writeFileSync } from "fs";
 import ora from "ora";
-import path from "path";
+import { writeWorkload } from "./workload.js";
 
 export function addBroadcastWorkload() {
 	const template = broadcastWorkload();
 	const spinner = ora();
 	spinner.start(`Create broadcast workload in ./workloads/broadcast.ts`);
-	writeFileSync(path.join("workloads", `broadcast.ts`), template);
+	writeWorkload("broadcast", template);
 	spinner.succeed();
 }
 

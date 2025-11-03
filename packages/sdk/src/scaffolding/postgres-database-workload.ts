@@ -1,8 +1,7 @@
-import { writeFileSync } from "fs";
 import ora from "ora";
-import path from "path";
 import { addDefaultImport } from "./add-import.js";
 import { replaceStringWithIdendentifier } from "./replace-string.js";
+import { writeWorkload } from "./workload.js";
 
 export function postgresDatabaseWorkload(id: string) {
 	return `import { PostgresDatabase } from "@monolayer/sdk";
@@ -17,7 +16,7 @@ export function addPostgresWorkload(databaseId: string) {
 	const template = postgresDatabaseWorkload(databaseId);
 	const spinner = ora();
 	spinner.start(`Create postgres workload in ./workloads/${databaseId}.ts`);
-	writeFileSync(path.join("workloads", `${databaseId}.ts`), template);
+	writeWorkload(databaseId, template);
 	spinner.succeed();
 }
 
