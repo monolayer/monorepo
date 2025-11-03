@@ -88,6 +88,14 @@ export class AppResponse extends http.ServerResponse {
 		if (contentType && Array.isArray(contentType)) {
 			awsMetadata.headers["Content-Type"] = contentType[0];
 		}
+
+		if (
+			awsMetadata.headers["Cache-Control"] === undefined &&
+			awsMetadata.headers["cache-control"] === undefined
+		) {
+			awsMetadata.headers["Cache-Control"] =
+				"no-store, no-cache, must-revalidate, proxy-revalidate";
+		}
 		return awsMetadata;
 	}
 }
