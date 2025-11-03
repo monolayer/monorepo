@@ -9,14 +9,17 @@ export function task(command: Command) {
 		.command("task")
 		.description("add a Task workload")
 		.option("--skip-components", "Skip component installation")
+		.option("--name <name>", "Name of the task")
 		.action(async (options) => {
-			const bucket = await promptTaskName();
+			const taskOptions = options.name
+				? { id: kebabCase(options.name), name: camelCase(options.name) }
+				: await promptTaskName();
 
 			if (options.skipComponents) {
-				addTaskWorkload(bucket);
+				addTaskWorkload(taskOptions);
 				return;
 			}
-			addTaskWorkload(bucket);
+			addTaskWorkload(taskOptions);
 		});
 }
 
