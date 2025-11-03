@@ -3,37 +3,37 @@ import { addDefaultImport } from "./add-import.js";
 import { replaceStringWithIdendentifier } from "./replace-string.js";
 import { writeWorkload } from "./workload.js";
 
-export function postgresDatabaseWorkload(id: string) {
+export function postgresDatabaseWorkload(opts: { id: string; name: string }) {
 	return `import { PostgresDatabase } from "@monolayer/sdk";
 
-const database = new PostgresDatabase("${id}");
+const ${opts.name} = new PostgresDatabase("${opts.id}");
 
-export default database;
+export default ${opts.name};
 `;
 }
 
-export function addPostgresWorkload(databaseId: string) {
-	const template = postgresDatabaseWorkload(databaseId);
+export function addPostgresWorkload(opts: { name: string; id: string }) {
+	const template = postgresDatabaseWorkload(opts);
 	const spinner = ora();
-	spinner.start(`Create postgres workload in ./workloads/${databaseId}.ts`);
-	writeWorkload(databaseId, template);
+	spinner.start(`Create postgres workload in ./workloads/${opts.id}.ts`);
+	writeWorkload(opts.id, template);
 	spinner.succeed();
 }
 
 export async function addDefaultImports(
-	databaseId: string,
+	opts: { id: string; name: string },
 	files: { rootConfigFile: string; clientFile: string },
 ) {
 	const spinner = ora();
 	spinner.start("Adapt configuration");
 	await addDefaultImport(
 		files.rootConfigFile,
-		`./workloads/${databaseId}`,
+		`./workloads/${opts.id}`,
 		"database",
 	);
 	await addDefaultImport(
 		files.clientFile,
-		`@/workloads/${databaseId}`,
+		`@/workloads/${opts.id}`,
 		"database",
 	);
 	replaceStringWithIdendentifier({

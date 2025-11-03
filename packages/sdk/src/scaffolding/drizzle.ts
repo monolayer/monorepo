@@ -9,19 +9,19 @@ import {
 
 const registryJSON = "http://localhost:3000/r/drizzle-pg.json";
 
-export async function addDrizzlePostgres(databaseId: string) {
+export async function addDrizzlePostgres(opts: { id: string; name: string }) {
 	execSync(`npx shadcn@latest add ${registryJSON}`, { stdio: "inherit" });
 
-	addPostgresWorkload(databaseId);
+	addPostgresWorkload(opts);
 
-	await addDefaultImports(databaseId, {
+	await addDefaultImports(opts, {
 		rootConfigFile: "drizzle.config.ts",
 		clientFile: "lib/drizzle/drizzle.ts",
 	});
 
 	await addEnvVar(
-		new PostgresDatabase(databaseId).connectionStringEnvVar,
-		`postgresql://postgres:postgres@localhost:5432/${databaseId}`,
+		new PostgresDatabase(opts.id).connectionStringEnvVar,
+		`postgresql://postgres:postgres@localhost:5432/${opts.id}`,
 	);
 	await addScriptToPackageJson("db:generate", "drizzle-kit generate");
 	await addScriptToPackageJson("db:migrate", "npx tsx lib/drizzle/migrate.ts");

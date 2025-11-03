@@ -11,16 +11,16 @@ import {
 
 const registryJSON = "http://localhost:3000/r/prisma-pg.json";
 
-export async function addPrismaPosgres(databaseId: string) {
+export async function addPrismaPosgres(opts: { id: string; name: string }) {
 	execSync(`npx shadcn@latest add ${registryJSON}`, { stdio: "inherit" });
-	addPostgresWorkload(databaseId);
-	await addDefaultImports(databaseId, {
+	addPostgresWorkload(opts);
+	await addDefaultImports(opts, {
 		rootConfigFile: "prisma.config.ts",
 		clientFile: "lib/prisma/prisma.ts",
 	});
 	await addEnvVar(
-		new PostgresDatabase(databaseId).connectionStringEnvVar,
-		`postgresql://postgres:postgres@localhost:5432/${databaseId}`,
+		new PostgresDatabase(opts.id).connectionStringEnvVar,
+		`postgresql://postgres:postgres@localhost:5432/${opts.id}`,
 	);
 	const spinner = ora();
 	await addScriptToPackageJson("db:migrate", "npx prisma migrate dev");

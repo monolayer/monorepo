@@ -1,5 +1,5 @@
 import type { Command } from "@commander-js/extra-typings";
-import { kebabCase, snakeCase } from "case-anything";
+import { camelCase, kebabCase, snakeCase } from "case-anything";
 import { exit } from "process";
 import prompts from "prompts";
 import { addDrizzlePostgres } from "~workloads/scaffolding/drizzle.js";
@@ -14,11 +14,12 @@ export function postgresDatabase(command: Command) {
 		.option("--orm <orm>", "ORM to use (prisma, drizzle, none)")
 		.option("--skip-components", "Skip installation of ORM components")
 		.action(async (options) => {
-			const databaseName = options.name ?? (await promptDatabaseName()).name;
-			const databaseId = kebabCase(databaseName);
+			const databaseOptions = options.name
+				? { id: kebabCase(options.name), name: camelCase(options.name) }
+				: await promptDatabaseName();
 
 			if (options.skipComponents) {
-				addPostgresWorkload(databaseId);
+				addPostgresWorkload(databaseOptions);
 				return;
 			}
 
@@ -29,10 +30,10 @@ export function postgresDatabase(command: Command) {
 
 			switch (orm) {
 				case "prisma":
-					await addPrismaPosgres(databaseId);
+					await addPrismaPosgres(databaseOptions);
 					break;
 				case "drizzle":
-					await addDrizzlePostgres(databaseId);
+					await addDrizzlePostgres(databaseOptions);
 					break;
 				default:
 					console.error("Invalid ORM option. Must be 'prisma' or 'drizzle'.");
