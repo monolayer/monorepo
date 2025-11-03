@@ -10,25 +10,33 @@ export function postgresDatabase(command: Command) {
 	return command
 		.command("postgres-database")
 		.description("add a postgreDatabase workload")
+		.option("--name <name>", "Name of the database")
+		.option("--orm <orm>", "ORM to use (prisma, drizzle, none)")
 		.option("--skip-components", "Skip installation of ORM components")
 		.action(async (options) => {
-			const database = await promptDatabaseName();
+			const databaseName = options.name ?? (await promptDatabaseName()).name;
+			const databaseId = kebabCase(databaseName);
 
 			if (options.skipComponents) {
-				addPostgresWorkload(database.id);
+				addPostgresWorkload(databaseId);
 				return;
 			}
 
-			const orm = await promptORM();
+			let orm = options.orm;
+			if (!orm) {
+				orm = await promptORM();
+			}
+
 			switch (orm) {
 				case "prisma":
-					await addPrismaPosgres(database.id);
+					await addPrismaPosgres(databaseId);
 					break;
 				case "drizzle":
-					await addDrizzlePostgres(database.id);
+					await addDrizzlePostgres(databaseId);
 					break;
-				case "none":
-					break;
+				default:
+					console.error("Invalid ORM option. Must be 'prisma' or 'drizzle'.");
+					exit(1);
 			}
 		});
 }
