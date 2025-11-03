@@ -7,7 +7,7 @@ import {
 	addPostgresWorkload,
 } from "./postgres-database-workload.js";
 
-const registryJSON = "http://localhost:3000/r/drizzle-pg.json";
+const registryJSON = "https://registry.monolayer.dev/r/drizzle-pg.json";
 
 export async function addDrizzlePostgres(opts: { id: string; name: string }) {
 	execSync(`npx shadcn@latest add ${registryJSON}`, { stdio: "inherit" });

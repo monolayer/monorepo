@@ -25,7 +25,7 @@ export function bucket(command: Command) {
 		});
 }
 
-const registryJSON = "http://localhost:3000/r/bucket.json";
+const registryJSON = "https://registry.monolayer.dev/r/bucket.json";
 
 async function prompBucketName() {
 	let aborted = false;

@@ -9,7 +9,7 @@ import {
 	addPostgresWorkload,
 } from "./postgres-database-workload.js";
 
-const registryJSON = "http://localhost:3000/r/prisma-pg.json";
+const registryJSON = "https://registry.monolayer.dev/r/prisma-pg.json";
 
 export async function addPrismaPosgres(opts: { id: string; name: string }) {
 	execSync(`npx shadcn@latest add ${registryJSON}`, { stdio: "inherit" });

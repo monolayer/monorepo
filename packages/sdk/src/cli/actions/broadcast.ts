@@ -1,7 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import { execSync } from "child_process";
 
-const registryJSON = "http://localhost:3000/r/broadcast.json";
+const registryJSON = "https://registry.monolayer.dev/r/broadcast.json";
 
 export function broadcast(command: Command) {
 	return command
