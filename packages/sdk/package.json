@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/sdk",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "Build and deploy full-stack applications with zero infrastructure overhead.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -90,7 +90,8 @@
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
 		"typedoc": "typedoc --docsRoot docs/reference --name workloads",
 		"typedoc:watch": "npm run typedoc -- --watch",
-		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sdk -f"
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sdk -f",
+		"republish:local": "npm run unpublish:local && npm run publish:local"
 	},
 	"dependencies": {
 		"@epic-web/remember": "^1.1.0",
@@ -102,6 +103,7 @@
 		"dotenv": "^16.4.5",
 		"get-port": "^7.1.0",
 		"testcontainers": "^10.14.0",
+		"ts-morph": "^27.0.2",
 		"tsup": "^8.3.5",
 		"tsx": "^4.7.1"
 	},
@@ -116,6 +118,9 @@
 		"@types/aws-lambda": "^8.10.146",
 		"@types/node": "^18.0.0",
 		"@types/nodemailer": "^6.4.16",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"@types/ws": "^8.18.1",
 		"@vitest/coverage-istanbul": "^3.1.4",
 		"@vitest/coverage-v8": "^3.1.4",
 		"@vitest/ui": "^3.1.4",
@@ -125,6 +130,7 @@
 		"commander": "^12.0.0",
 		"dockerfile-utils": "^0.16.1",
 		"dockerode": "^4.0.2",
+		"esbuild": "^0.25.6",
 		"ioredis": "^5.4.1",
 		"mysql2": "^3.11.4",
 		"nodemailer": "^6.9.16",
@@ -132,18 +138,14 @@
 		"pg": "^8.13.1",
 		"picocolors": "^1.0.0",
 		"prompts": "^2.4.2",
+		"react": "^19",
+		"react-dom": "^19",
 		"skott": "^0.33.2",
 		"tsup": "^8.3.5",
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
-		"vitest": "^3.1.4",
 		"uuid": "^11.1.0",
-		"ws": "^8.18.3",
-		"@types/ws": "^8.18.1",
-		"esbuild": "^0.25.6",
-		"react": "^19",
-		"react-dom": "^19",
-		"@types/react": "^19",
-		"@types/react-dom": "^19"
+		"vitest": "^3.1.4",
+		"ws": "^8.18.3"
 	}
 }
