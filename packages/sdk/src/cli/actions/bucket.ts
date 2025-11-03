@@ -10,15 +10,18 @@ export function bucket(command: Command) {
 		.command("bucket")
 		.description("add a Bucket workload")
 		.option("--skip-components", "Skip component installation")
+		.option("--name <name>", "Name of the bucket")
 		.action(async (options) => {
-			const bucket = await prompBucketName();
+			const bucketOptions = options.name
+				? { id: kebabCase(options.name), name: camelCase(options.name) }
+				: await prompBucketName();
 
 			if (options.skipComponents) {
-				addBucketWorkload(bucket);
+				addBucketWorkload(bucketOptions);
 				return;
 			}
 			execSync(`npx shadcn@latest add ${registryJSON}`, { stdio: "inherit" });
-			addBucketWorkload(bucket);
+			addBucketWorkload(bucketOptions);
 		});
 }
 
