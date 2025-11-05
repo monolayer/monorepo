@@ -43,13 +43,12 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  *
  * ```
  */
-export class Bucket extends StatefulWorkload {
+export class Bucket<TOptions extends BucketOptions> extends StatefulWorkload {
 	/**
-	 * Whether to enable ACLs to grant access to this bucket and its objects.
-	 *
-	 * @default false
+	 * Defines public access permissions for specific paths within the bucket.
+	 * This allows anonymous users to perform actions on objects matching the specified path patterns.
 	 */
-	enablePublicACLs: boolean;
+	publicAccess: PublicAccess;
 
 	constructor(
 		/**
@@ -59,10 +58,10 @@ export class Bucket extends StatefulWorkload {
 		/**
 		 * Bucket options
 		 */
-		options?: BucketOptions,
+		options?: TOptions,
 	) {
 		super(id);
-		this.enablePublicACLs = options?.enablePublicACLs ?? false;
+		this.publicAccess = options?.publicAccess ?? {};
 	}
 
 	get name() {
@@ -102,11 +101,17 @@ export function bucketLocalConfiguration() {
 	};
 }
 
+export type AccessGrant = "get" | "list" | "write" | "delete";
+
+export type PublicAccess = Record<string, AccessGrant[]>;
+
 export interface BucketOptions {
 	/**
-	 * Whether the bucket has public read access permission.
+	 * Defines public access permissions for specific paths within the bucket.
+	 * This allows anonymous users to perform actions like 'get', 'list', 'write', or 'delete'
+	 * on objects matching the specified path patterns.
 	 */
-	enablePublicACLs?: boolean;
+	publicAccess?: PublicAccess;
 }
 
 const bucketEndPointEnvVarName = "ML_BUCKET_ENDPOINT";

@@ -37,12 +37,22 @@ test("name from env var in test", () => {
 	expect(bucket.name).toStrictEqual("work-documents-test");
 });
 
-test("private by default", () => {
+test("access is an empty object by default", () => {
 	const bucket = new Bucket("work-documents");
-	expect(bucket.enablePublicACLs).toBeFalsy();
+	expect(bucket.publicAccess).toStrictEqual({});
 });
 
-test("enable enablePublicACLs", () => {
-	const bucket = new Bucket("work-documents", { enablePublicACLs: true });
-	expect(bucket.enablePublicACLs).toBeTruthy();
+test("public access can be set", () => {
+	const bucket = new Bucket("work-documents", {
+		publicAccess: {
+			"media/avatars/*": ["delete", "list"],
+			"media/profile-pictures/*": ["get"],
+			"media/videos/*": ["get", "write"],
+		},
+	});
+	expect(bucket.publicAccess).toStrictEqual({
+		"media/avatars/*": ["delete", "list"],
+		"media/profile-pictures/*": ["get"],
+		"media/videos/*": ["get", "write"],
+	});
 });

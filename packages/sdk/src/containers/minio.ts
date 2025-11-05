@@ -16,7 +16,8 @@ export class MinioContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: Bucket, options?: { test?: boolean }) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	constructor(workload: Bucket<any>, options?: { test?: boolean }) {
 		super(workload);
 		this.#testContainer = options?.test ?? false;
 	}
@@ -69,17 +70,23 @@ export class MinioContainer extends ContainerWithURI {
 						this.#testContainer ? "test" : "development",
 					].join("-")}`,
 				);
-				if (!this.workload.enablePublicACLs) {
+				if (Object.keys(this.workload.publicAccess).length !== 0) {
 					await this.startedContainer.exec(
 						`mc alias set myminio http://localhost:9000 minioadmin minioadmin`,
 					);
-					//
-					await this.startedContainer.exec(
-						`mc anonymous set download myminio/${[
-							this.workload.id,
-							this.#testContainer ? "test" : "development",
-						].join("-")}`,
-					);
+
+					for (const [path, grants] of Object.entries(
+						this.workload.publicAccess,
+					)) {
+						for (const grant of grants) {
+							await this.startedContainer.exec(
+								`mc anonymous set ${grant === "write" ? "upload" : "download"} myminio/${[
+									this.workload.id,
+									this.#testContainer ? "test" : "development",
+								].join("-")}/${path}`,
+							);
+						}
+					}
 				}
 			}
 		}

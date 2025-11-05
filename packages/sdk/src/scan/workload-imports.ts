@@ -79,7 +79,8 @@ export interface WorkloadImport<I> {
 
 interface ImportByWorkload {
 	PostgresDatabase: WorkloadImport<PostgresDatabase>[];
-	Bucket: WorkloadImport<Bucket>[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	Bucket: WorkloadImport<Bucket<any>>[];
 	Redis: WorkloadImport<Redis>[];
 	Cron: WorkloadImport<Cron>[];
 	Task: WorkloadImport<Task<unknown>>[];

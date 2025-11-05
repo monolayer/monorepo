@@ -30,7 +30,7 @@ export interface WorkloadInfo {
 
 export interface BucketInfo {
 	id: string;
-	publicRead: boolean;
+	publicAccess: Record<string, string[]>;
 }
 
 export interface CronInfo {
