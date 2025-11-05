@@ -39,10 +39,10 @@ test("name from env var in test", () => {
 
 test("private by default", () => {
 	const bucket = new Bucket("work-documents");
-	expect(bucket.publicRead).toBeFalsy();
+	expect(bucket.enablePublicACLs).toBeFalsy();
 });
 
-test("public read bucket", () => {
-	const bucket = new Bucket("work-documents", { publicRead: true });
-	expect(bucket.publicRead).toBeTruthy();
+test("enable enablePublicACLs", () => {
+	const bucket = new Bucket("work-documents", { enablePublicACLs: true });
+	expect(bucket.enablePublicACLs).toBeTruthy();
 });

@@ -69,7 +69,7 @@ export class MinioContainer extends ContainerWithURI {
 						this.#testContainer ? "test" : "development",
 					].join("-")}`,
 				);
-				if (!this.workload.publicRead) {
+				if (!this.workload.enablePublicACLs) {
 					await this.startedContainer.exec(
 						`mc alias set myminio http://localhost:9000 minioadmin minioadmin`,
 					);

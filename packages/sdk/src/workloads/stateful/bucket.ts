@@ -45,11 +45,11 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  */
 export class Bucket extends StatefulWorkload {
 	/**
-	 * Whether the bucket has public read access permissions.
+	 * Whether to enable ACLs to grant access to this bucket and its objects.
 	 *
 	 * @default false
 	 */
-	publicRead: boolean;
+	enablePublicACLs: boolean;
 
 	constructor(
 		/**
@@ -62,7 +62,7 @@ export class Bucket extends StatefulWorkload {
 		options?: BucketOptions,
 	) {
 		super(id);
-		this.publicRead = options?.publicRead ?? false;
+		this.enablePublicACLs = options?.enablePublicACLs ?? false;
 	}
 
 	get name() {
@@ -106,7 +106,7 @@ export interface BucketOptions {
 	/**
 	 * Whether the bucket has public read access permission.
 	 */
-	publicRead?: boolean;
+	enablePublicACLs?: boolean;
 }
 
 const bucketEndPointEnvVarName = "ML_BUCKET_ENDPOINT";

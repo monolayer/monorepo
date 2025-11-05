@@ -41,7 +41,7 @@ export class Make {
 		for (const imported of this.#imports.Bucket) {
 			manifest.bucket.push({
 				id: imported.workload.id,
-				publicRead: imported.workload.publicRead,
+				publicRead: imported.workload.enablePublicACLs,
 			});
 		}
 		for (const imported of [...this.#imports.PostgresDatabase]) {
