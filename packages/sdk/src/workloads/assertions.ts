@@ -12,10 +12,7 @@ export function assertPostgresDatabase(
 	workload: Workload,
 ): asserts workload is PostgresDatabase {}
 
-export function assertBucket(
-	workload: Workload,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): asserts workload is Bucket<any> {}
+export function assertBucket(workload: Workload): asserts workload is Bucket {}
 
 export function assertCron(workload: Workload): asserts workload is Cron {}
 

@@ -16,8 +16,8 @@ export class MinioContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	constructor(workload: Bucket<any>, options?: { test?: boolean }) {
+
+	constructor(workload: Bucket, options?: { test?: boolean }) {
 		super(workload);
 		this.#testContainer = options?.test ?? false;
 	}

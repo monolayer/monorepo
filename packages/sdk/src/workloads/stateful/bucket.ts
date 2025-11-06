@@ -43,7 +43,7 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  *
  * ```
  */
-export class Bucket<TOptions extends BucketOptions> extends StatefulWorkload {
+export class Bucket extends StatefulWorkload {
 	/**
 	 * Defines public access permissions for specific paths within the bucket.
 	 * This allows anonymous users to perform actions on objects matching the specified path patterns.
@@ -58,7 +58,7 @@ export class Bucket<TOptions extends BucketOptions> extends StatefulWorkload {
 		/**
 		 * Bucket options
 		 */
-		options?: TOptions,
+		options?: BucketOptions,
 	) {
 		super(id);
 		this.publicAccess = options?.publicAccess ?? {};
