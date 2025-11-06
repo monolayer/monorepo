@@ -13,6 +13,8 @@ export {
 	Bucket,
 	BucketOptions,
 	bucketLocalConfiguration,
+	type AccessGrant,
+	type PublicAccess,
 } from "~workloads/workloads/stateful/bucket.js";
 export type { Database } from "~workloads/workloads/stateful/database.js";
 export { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
