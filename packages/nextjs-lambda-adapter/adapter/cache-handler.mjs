@@ -42,7 +42,7 @@ export default class CustomCacheHandler {
 
 			if (!Body) return null;
 			const data = await Body.transformToString();
-			return JSON.parse(data);
+			return JSON.parse(data, jsonReviver);
 		} catch (error) {
 			if (error.name === "NoSuchKey") return null;
 			console.error("Error fetching from S3:", error);
@@ -145,4 +145,11 @@ function debug(...msg) {
 	if (process.env.NEXTJS_ADAPTER_CACHE_DEBUG === "true") {
 		console.debug(...msg);
 	}
+}
+
+function jsonReviver(_key, value) {
+	if (value && value.type === "Buffer" && value.data) {
+		return Buffer.from(value.data, "base64");
+	}
+	return value;
 }
